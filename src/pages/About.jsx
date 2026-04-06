@@ -127,7 +127,7 @@ const About = () => {
                     className="w-4 h-4 text-gray-900 dark:text-white"
                   />
                   <span className="text-sm font-medium text-gray-900 dark:text-white">
-                    Since 2014
+                    Since 2023
                   </span>
                 </div>
               </div>
