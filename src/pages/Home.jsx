@@ -19,7 +19,7 @@ import {
 
 const Home = () => {
   // Replace with your actual hero image or video
-  const heroImage = "/photos/photo1.jpg";
+  const heroImage = "../assets/photos/photo1.jpg";
   // Optional: Use video instead of image
   // const heroVideo = '/videos/hero-reel.mp4';
 

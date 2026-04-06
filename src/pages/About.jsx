@@ -25,8 +25,8 @@ import {
 
 const About = () => {
   // Replace with your actual photos
-  const photographerImage = "/photos/photo1.jpg";
-  const actionShot = "/photos/photo2.jpg";
+  const photographerImage = "../assets/photos/photo1.jpg";
+  const actionShot = "../assets/photos/photo2.jpg";
 
   const socialLinks = [
     {
