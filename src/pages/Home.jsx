@@ -1,25 +1,25 @@
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 // Font Awesome Imports
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
   faCamera,
   faVideo,
-  faImage
-} from '@fortawesome/free-solid-svg-icons';
+  faImage,
+} from "@fortawesome/free-solid-svg-icons";
 
 // Import brand icons from free-brands-svg-icons
 import {
   faInstagram,
   faXTwitter,
-  faFacebookF
-} from '@fortawesome/free-brands-svg-icons';
+  faFacebookF,
+} from "@fortawesome/free-brands-svg-icons";
 
 const Home = () => {
   // Replace with your actual hero image or video
-  const heroImage = '/photos/photo1.jpg';
+  const heroImage = "/photos/photo1.jpg";
   // Optional: Use video instead of image
   // const heroVideo = '/videos/hero-reel.mp4';
 
@@ -30,10 +30,11 @@ const Home = () => {
         {/* Option 1: Image Background */}
         <img
           src={heroImage}
+          loading="lazy"
           alt="Photography portfolio hero"
           className="w-full h-full object-cover"
         />
-        
+
         {/* Option 2: Video Background (uncomment to use) */}
         {/* <video
           src={heroVideo}
@@ -43,7 +44,7 @@ const Home = () => {
           playsInline
           className="w-full h-full object-cover"
         /> */}
-        
+
         {/* Gradient Overlay - More artistic than solid black */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60" />
       </div>
@@ -68,19 +69,19 @@ const Home = () => {
 
           {/* Main Title */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-white mb-6 tracking-wide">
-            Capturing Moments and 
+            Capturing Moments and
             <br />
             <span className="font-medium relative inline-block">
               Best quality always
               <motion.span
                 initial={{ width: 0 }}
-                animate={{ width: '100%' }}
+                animate={{ width: "100%" }}
                 transition={{ duration: 0.8, delay: 1 }}
                 className="absolute -bottom-2 left-0 h-[2px] bg-white/50"
               />
             </span>
           </h1>
-          
+
           {/* Description */}
           <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
             Documentary-style photography for weddings, portraits, and brands.
@@ -100,20 +101,20 @@ const Home = () => {
               className="group inline-flex items-center px-8 py-4 bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300 text-sm uppercase tracking-wider font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               <span>View Portfolio</span>
-              <FontAwesomeIcon 
-                icon={faArrowRight} 
-                className="ml-3 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" 
+              <FontAwesomeIcon
+                icon={faArrowRight}
+                className="ml-3 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
               />
             </Link>
-            
+
             <Link
               to="/contact"
               className="group inline-flex items-center px-8 py-4 border-2 border-white/30 text-white hover:bg-white/10 transition-all duration-300 text-sm uppercase tracking-wider font-medium backdrop-blur-sm"
             >
               <span>Inquire Now</span>
-              <FontAwesomeIcon 
-                icon={faCamera} 
-                className="ml-3 w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity duration-300" 
+              <FontAwesomeIcon
+                icon={faCamera}
+                className="ml-3 w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity duration-300"
               />
             </Link>
           </motion.div>
@@ -126,16 +127,28 @@ const Home = () => {
             className="flex items-center justify-center space-x-8 mt-16"
           >
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-light text-white">3+</div>
-              <div className="text-xs uppercase tracking-wider text-white/60 mt-1">Years</div>
+              <div className="text-2xl md:text-3xl font-light text-white">
+                3+
+              </div>
+              <div className="text-xs uppercase tracking-wider text-white/60 mt-1">
+                Years
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-light text-white">200+</div>
-              <div className="text-xs uppercase tracking-wider text-white/60 mt-1">Weddings</div>
+              <div className="text-2xl md:text-3xl font-light text-white">
+                200+
+              </div>
+              <div className="text-xs uppercase tracking-wider text-white/60 mt-1">
+                Weddings
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-light text-white">50+</div>
-              <div className="text-xs uppercase tracking-wider text-white/60 mt-1">Brands</div>
+              <div className="text-2xl md:text-3xl font-light text-white">
+                50+
+              </div>
+              <div className="text-xs uppercase tracking-wider text-white/60 mt-1">
+                Brands
+              </div>
             </div>
           </motion.div>
         </motion.div>

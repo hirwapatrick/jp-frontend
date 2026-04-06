@@ -29,27 +29,27 @@ const About = () => {
   const actionShot = "/photos/photo2.jpg";
 
   const socialLinks = [
-  {
-    href: "https://instagram.com/jacques_photographer",
-    icon: faInstagram,
-    label: "Instagram"
-  },
-  {
-    href: "https://x.com/jacques_photographer", 
-    icon: faTwitter,
-    label: "X (Twitter)"
-  },
-  {
-    href: "https://facebook.com/KeddyJacques",
-    icon: faFacebookF,
-    label: "Facebook"
-  },
-  {
-    href: "https://pinterest.com/jacques_photographer",
-    icon: faPinterest,
-    label: "Pinterest"
-  }
-];
+    {
+      href: "https://instagram.com/jacques_photographer",
+      icon: faInstagram,
+      label: "Instagram",
+    },
+    {
+      href: "https://x.com/jacques_photographer",
+      icon: faTwitter,
+      label: "X (Twitter)",
+    },
+    {
+      href: "https://facebook.com/KeddyJacques",
+      icon: faFacebookF,
+      label: "Facebook",
+    },
+    {
+      href: "https://pinterest.com/jacques_photographer",
+      icon: faPinterest,
+      label: "Pinterest",
+    },
+  ];
 
   const stats = [
     { icon: faCalendar, value: "3+", label: "Years Experience" },
@@ -109,6 +109,7 @@ const About = () => {
               <div className="aspect-[4/5] overflow-hidden rounded-lg shadow-xl">
                 <img
                   src={photographerImage}
+                  loading="lazy"
                   alt="Jacques - Photographer"
                   className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                 />
@@ -136,6 +137,7 @@ const About = () => {
             <div className="absolute -bottom-12 -left-12 w-40 h-40 rounded-lg overflow-hidden border-4 border-white dark:border-black shadow-lg hidden lg:block">
               <img
                 src={actionShot}
+                loading="lazy"
                 alt="Jacques at work"
                 className="w-full h-full object-cover"
               />
@@ -276,49 +278,55 @@ const About = () => {
 
             {/* Connect & CTA */}
             <div className="pt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-t border-gray-200 dark:border-gray-800">
-  {/* Social Connect Section */}
-  <div>
-    <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-4">
-      Connect With Me
-    </h3>
-    <div className="flex space-x-3">
-      {socialLinks.map((link, index) => (
-        <a
-          key={index}
-          href={link.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group relative w-11 h-11 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300 hover:scale-110 hover:rotate-3 shadow-sm hover:shadow-md"
-          aria-label={link.label}
-        >
-          <FontAwesomeIcon icon={link.icon} className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
-        </a>
-      ))}
-    </div>
-  </div>
+              {/* Social Connect Section */}
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-4">
+                  Connect With Me
+                </h3>
+                <div className="flex space-x-3">
+                  {socialLinks.map((link, index) => (
+                    <a
+                      key={index}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group relative w-11 h-11 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300 hover:scale-110 hover:rotate-3 shadow-sm hover:shadow-md"
+                      aria-label={link.label}
+                    >
+                      <FontAwesomeIcon
+                        icon={link.icon}
+                        className="w-4 h-4 transition-transform duration-300 group-hover:scale-110"
+                      />
+                    </a>
+                  ))}
+                </div>
+              </div>
 
-  {/* CTA Button */}
-  <div className="flex flex-col sm:flex-row gap-3">
-    <a
-      href="/contact"
-      className="group relative inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-gray-900 to-gray-800 text-white dark:from-white dark:to-gray-100 dark:text-black text-sm font-semibold uppercase tracking-wider overflow-hidden rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
-    >
-      <span className="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-700 dark:from-gray-100 dark:to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-      <span className="relative flex items-center">
-        <FontAwesomeIcon icon={faEnvelope} className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-        Inquire Now
-      </span>
-    </a>
-    
-    {/* Optional secondary button */}
-    <a
-      href="/work"
-      className="inline-flex items-center justify-center px-8 py-4 bg-transparent border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-semibold uppercase tracking-wider rounded-xl hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black hover:border-gray-900 dark:hover:border-white transition-all duration-300 hover:scale-105"
-    >
-      View Portfolio
-    </a>
-  </div>
-</div>
+              {/* CTA Button */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a
+                  href="/contact"
+                  className="group relative inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-gray-900 to-gray-800 text-white dark:from-white dark:to-gray-100 dark:text-black text-sm font-semibold uppercase tracking-wider overflow-hidden rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+                >
+                  <span className="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-700 dark:from-gray-100 dark:to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                  <span className="relative flex items-center">
+                    <FontAwesomeIcon
+                      icon={faEnvelope}
+                      className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-300"
+                    />
+                    Inquire Now
+                  </span>
+                </a>
+
+                {/* Optional secondary button */}
+                <a
+                  href="/work"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-transparent border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-semibold uppercase tracking-wider rounded-xl hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black hover:border-gray-900 dark:hover:border-white transition-all duration-300 hover:scale-105"
+                >
+                  View Portfolio
+                </a>
+              </div>
+            </div>
           </motion.div>
         </div>
 
