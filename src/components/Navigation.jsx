@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { Camera, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import SocialLinks from './SocialLinks';
+import logoImage from '../assets/photos/logo.png'
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +23,7 @@ const Navigation = () => {
             {/* Logo */}
             <NavLink to="/" className="flex items-center space-x-2">
               <img
-                src="/photos/logo.png"
+                src={logoImage}
                 alt="Jacques Photographer Logo"
                 className="w-16 h-16 md:w-24 md:h-24"
               />

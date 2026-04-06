@@ -17,12 +17,9 @@ import {
   faFacebookF,
 } from "@fortawesome/free-brands-svg-icons";
 
-const Home = () => {
-  // Replace with your actual hero image or video
-  const heroImage = "../assets/photos/photo1.jpg";
-  // Optional: Use video instead of image
-  // const heroVideo = '/videos/hero-reel.mp4';
+import heroImage from "../assets/photos/photo1.jpg";
 
+const Home = () => {
   return (
     <div className="relative h-screen overflow-hidden">
       {/* Background Media */}

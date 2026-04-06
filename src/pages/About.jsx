@@ -23,11 +23,10 @@ import {
   faFacebookF,
 } from "@fortawesome/free-brands-svg-icons";
 
-const About = () => {
-  // Replace with your actual photos
-  const photographerImage = "../assets/photos/photo1.jpg";
-  const actionShot = "../assets/photos/photo2.jpg";
+import photographerImage from "../assets/photos/photo1.jpg";
+import actionShot from "../assets/photos/photo2.jpg";
 
+const About = () => {
   const socialLinks = [
     {
       href: "https://instagram.com/jacques_photographer",
