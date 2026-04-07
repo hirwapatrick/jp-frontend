@@ -1,11 +1,34 @@
 import { NavLink } from 'react-router-dom';
 import { Camera, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SocialLinks from './SocialLinks';
 import logoImage from '../assets/photos/logo.png'
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Close mobile menu when window resizes to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   const navItems = [
     { path: '/', label: 'Home' },
@@ -17,28 +40,32 @@ const Navigation = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full p-3 bg-white/90 dark:bg-black/90 backdrop-blur-md z-50 border-b border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            {/* Logo */}
-            <NavLink to="/" className="flex items-center space-x-2">
+      <header className="fixed top-0 left-0 w-full bg-white/95 dark:bg-black/95 backdrop-blur-md z-50 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 md:h-20">
+            {/* Logo - Fixed visibility */}
+            <NavLink to="/" className="flex items-center shrink-0" onClick={() => setIsOpen(false)}>
               <img
                 src={logoImage}
                 alt="Jacques Photographer Logo"
-                className="w-16 h-16 md:w-24 md:h-24"
+                className="w-12 h-12 sm:w-14 sm:h-14 md:w-20 md:h-20 object-contain"
+                onError={(e) => {
+                  console.error('Logo failed to load');
+                  e.currentTarget.style.display = 'none';
+                }}
               />
             </NavLink>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-8">
+            <nav className="hidden md:flex space-x-6 lg:space-x-8">
               {navItems.map((item) => (
                 <NavLink
                   key={item.path}
                   to={item.path}
                   className={({ isActive }) =>
-                    `text-sm uppercase tracking-wider font-light transition-colors hover:text-gray-600 dark:hover:text-gray-300 ${
+                    `text-sm uppercase tracking-wider font-light transition-colors hover:text-gray-600 dark:hover:text-gray-300 py-2 ${
                       isActive
-                        ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white'
+                        ? 'text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white'
                         : 'text-gray-500 dark:text-gray-400'
                     }`
                   }
@@ -53,49 +80,59 @@ const Navigation = () => {
               <SocialLinks />
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Better visibility */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
-              className="md:hidden p-2 text-gray-900 dark:text-white"
+              className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors z-50"
             >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Improved overlay */}
         <div
-          className={`md:hidden absolute top-20 left-0 w-full bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 transition-transform duration-300 ${
-            isOpen ? 'translate-y-0' : '-translate-y-full'
+          className={`md:hidden fixed top-16 sm:top-20 left-0 w-full h-[calc(100vh-4rem)] sm:h-[calc(100vh-5rem)] bg-white dark:bg-black overflow-y-auto transition-transform duration-300 ease-in-out z-40 ${
+            isOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          <div className="flex flex-col space-y-4 p-6">
+          <div className="flex flex-col space-y-4 p-6 pt-8">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 onClick={() => setIsOpen(false)}
                 className={({ isActive }) =>
-                  `text-base uppercase tracking-wider py-2 ${
+                  `text-lg uppercase tracking-wider py-3 px-4 rounded-lg transition-colors ${
                     isActive
-                      ? 'text-gray-900 dark:text-white font-medium'
-                      : 'text-gray-500 dark:text-gray-400'
+                      ? 'text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 font-medium'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900'
                   }`
                 }
               >
                 {item.label}
               </NavLink>
             ))}
-            <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
+            <div className="pt-6 mt-4 border-t border-gray-200 dark:border-gray-800">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 px-4">Follow me</p>
               <SocialLinks />
             </div>
           </div>
         </div>
       </header>
 
-      {/* Spacer div to prevent content overlap */}
-      <div className="pt-20 md:pt-24" />
+      {/* Spacer div - Adjusted for mobile */}
+      <div className="h-16 md:h-20" />
+      
+      {/* Overlay background when mobile menu is open */}
+      {isOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/50 z-30"
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
     </>
   );
 };
