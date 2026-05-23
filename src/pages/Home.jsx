@@ -39,11 +39,12 @@ const Home = () => {
       </div>
 
       {/* Floating Banner */}
+      {/* Floating Banner */}
       <motion.div
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="absolute top-6 left-1/2 -translate-x-1/2 z-50 w-[92%] md:w-[700px]"
+        className="absolute top-6 left-1/2 -translate-x-1/2 z-20 w-[92%] md:w-175"
       >
         <div className="relative overflow-hidden rounded-2xl border border-white/20 shadow-2xl backdrop-blur-md">
           {/* Banner Image */}
@@ -93,10 +94,7 @@ const Home = () => {
             transition={{ delay: 0.3 }}
             className="inline-flex items-center gap-2 px-5 py-2 border border-white/20 bg-white/10 backdrop-blur-md rounded-full mb-8"
           >
-            <FontAwesomeIcon
-              icon={faCamera}
-              className="text-white text-xs"
-            />
+            <FontAwesomeIcon icon={faCamera} className="text-white text-xs" />
 
             <span className="text-white/80 text-xs uppercase tracking-[0.3em]">
               Based in Rwanda
@@ -106,9 +104,7 @@ const Home = () => {
           {/* Heading */}
           <h1 className="text-5xl md:text-7xl lg:text-8xl text-white font-light leading-[1.05] tracking-tight">
             Capturing
-            <span className="block font-semibold mt-2">
-              Timeless Moments
-            </span>
+            <span className="block font-semibold mt-2">Timeless Moments</span>
           </h1>
 
           {/* Accent Line */}
@@ -121,8 +117,8 @@ const Home = () => {
 
           {/* Description */}
           <p className="text-white/75 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto font-light">
-            Luxury documentary photography for weddings, portraits,
-            editorials, and modern brands.
+            Luxury documentary photography for weddings, portraits, editorials,
+            and modern brands.
             <br className="hidden md:block" />
             Creating emotional imagery that feels authentic and timeless.
           </p>
@@ -139,7 +135,6 @@ const Home = () => {
               className="group px-8 py-4 bg-white text-black rounded-full uppercase tracking-[0.2em] text-xs font-semibold hover:scale-105 transition-all duration-300 flex items-center"
             >
               View Portfolio
-
               <FontAwesomeIcon
                 icon={faArrowRight}
                 className="ml-3 text-xs group-hover:translate-x-1 transition-transform"
@@ -151,11 +146,7 @@ const Home = () => {
               className="group px-8 py-4 border border-white/30 bg-white/10 backdrop-blur-md text-white rounded-full uppercase tracking-[0.2em] text-xs font-semibold hover:bg-white/20 transition-all duration-300 flex items-center"
             >
               Inquire Now
-
-              <FontAwesomeIcon
-                icon={faCamera}
-                className="ml-3 text-xs"
-              />
+              <FontAwesomeIcon icon={faCamera} className="ml-3 text-xs" />
             </Link>
           </motion.div>
 
