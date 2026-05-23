@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { Camera, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import SocialLinks from './SocialLinks';
-import logoImage from '../assets/photos/logo.png'
+import logoImage from '../assets/photos/logo1.png'
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);

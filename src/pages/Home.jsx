@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
-// Font Awesome Imports
+// Font Awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
@@ -10,187 +10,222 @@ import {
   faImage,
 } from "@fortawesome/free-solid-svg-icons";
 
-// Import brand icons from free-brands-svg-icons
 import {
   faInstagram,
   faXTwitter,
   faFacebookF,
 } from "@fortawesome/free-brands-svg-icons";
 
-import heroImage from "../assets/photos/photo1.jpg";
+// Images
+import heroImage from "../assets/photos/heroimg.jfif";
+import bannerImage from "../assets/photos/banner.jpg";
 
 const Home = () => {
   return (
-    <div className="relative h-screen overflow-hidden">
-      {/* Background Media */}
+    <div className="relative min-h-screen overflow-hidden bg-black">
+      {/* Background */}
       <div className="absolute inset-0">
-        {/* Option 1: Image Background */}
         <img
           src={heroImage}
-          loading="lazy"
-          alt="Photography portfolio hero"
-          className="w-full h-full object-cover"
+          alt="Photography Hero"
+          className="w-full h-full object-cover scale-105"
         />
 
-        {/* Option 2: Video Background (uncomment to use) */}
-        {/* <video
-          src={heroVideo}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-        /> */}
+        {/* Cinematic Overlay */}
+        <div className="absolute inset-0 bg-black/60" />
 
-        {/* Gradient Overlay - More artistic than solid black */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60" />
+        {/* Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black" />
       </div>
 
-      {/* Content */}
-      <div className="relative h-full flex items-center justify-center text-center px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-4xl"
-        >
-          {/* Badge / Tagline */}
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="inline-block px-4 py-2 mb-6 text-xs uppercase tracking-[0.3em] text-white/80 border border-white/30 backdrop-blur-sm rounded-full"
-          >
-            Based in New York
-          </motion.span>
+      {/* Floating Banner */}
+      <motion.div
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="absolute top-6 left-1/2 -translate-x-1/2 z-50 w-[92%] md:w-[700px]"
+      >
+        <div className="relative overflow-hidden rounded-2xl border border-white/20 shadow-2xl backdrop-blur-md">
+          {/* Banner Image */}
+          <img
+            src={bannerImage}
+            alt="Banner"
+            className="w-full h-24 md:h-28 object-cover"
+          />
 
-          {/* Main Title */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-white mb-6 tracking-wide">
-            Capturing Moments and
-            <br />
-            <span className="font-medium relative inline-block">
-              Best quality always
-              <motion.span
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 0.8, delay: 1 }}
-                className="absolute -bottom-2 left-0 h-[2px] bg-white/50"
-              />
+          {/* Dark Overlay */}
+          <div className="absolute inset-0 bg-black/45" />
+
+          {/* Content */}
+          <div className="absolute inset-0 flex items-center justify-between px-5 md:px-8">
+            <div>
+              <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-white/70 mb-1">
+                Limited Sessions Open
+              </p>
+
+              <h2 className="text-white text-sm md:text-xl font-semibold">
+                Wedding & Brand Photography 2026
+              </h2>
+            </div>
+
+            <Link
+              to="/contact"
+              className="bg-white text-black px-4 md:px-6 py-2 rounded-full text-[10px] md:text-xs uppercase tracking-widest font-semibold hover:bg-gray-200 transition-all duration-300"
+            >
+              Book Now
+            </Link>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Hero Content */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center text-center px-6 pt-32">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="max-w-5xl"
+        >
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="inline-flex items-center gap-2 px-5 py-2 border border-white/20 bg-white/10 backdrop-blur-md rounded-full mb-8"
+          >
+            <FontAwesomeIcon
+              icon={faCamera}
+              className="text-white text-xs"
+            />
+
+            <span className="text-white/80 text-xs uppercase tracking-[0.3em]">
+              Based in Rwanda
+            </span>
+          </motion.div>
+
+          {/* Heading */}
+          <h1 className="text-5xl md:text-7xl lg:text-8xl text-white font-light leading-[1.05] tracking-tight">
+            Capturing
+            <span className="block font-semibold mt-2">
+              Timeless Moments
             </span>
           </h1>
 
+          {/* Accent Line */}
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: "120px" }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="h-[2px] bg-white/60 mx-auto mt-8 mb-8"
+          />
+
           {/* Description */}
-          <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-            Documentary-style photography for weddings, portraits, and brands.
+          <p className="text-white/75 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto font-light">
+            Luxury documentary photography for weddings, portraits,
+            editorials, and modern brands.
             <br className="hidden md:block" />
-            Timeless images that tell your unique story.
+            Creating emotional imagery that feels authentic and timeless.
           </p>
 
-          {/* CTA Buttons */}
+          {/* Buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            transition={{ delay: 0.6 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-5 mt-12"
           >
             <Link
               to="/work"
-              className="group inline-flex items-center px-8 py-4 bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300 text-sm uppercase tracking-wider font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="group px-8 py-4 bg-white text-black rounded-full uppercase tracking-[0.2em] text-xs font-semibold hover:scale-105 transition-all duration-300 flex items-center"
             >
-              <span>View Portfolio</span>
+              View Portfolio
+
               <FontAwesomeIcon
                 icon={faArrowRight}
-                className="ml-3 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                className="ml-3 text-xs group-hover:translate-x-1 transition-transform"
               />
             </Link>
 
             <Link
               to="/contact"
-              className="group inline-flex items-center px-8 py-4 border-2 border-white/30 text-white hover:bg-white/10 transition-all duration-300 text-sm uppercase tracking-wider font-medium backdrop-blur-sm"
+              className="group px-8 py-4 border border-white/30 bg-white/10 backdrop-blur-md text-white rounded-full uppercase tracking-[0.2em] text-xs font-semibold hover:bg-white/20 transition-all duration-300 flex items-center"
             >
-              <span>Inquire Now</span>
+              Inquire Now
+
               <FontAwesomeIcon
                 icon={faCamera}
-                className="ml-3 w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                className="ml-3 text-xs"
               />
             </Link>
           </motion.div>
 
-          {/* Stats / Social Proof */}
+          {/* Stats */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex items-center justify-center space-x-8 mt-16"
+            transition={{ delay: 1 }}
+            className="flex flex-wrap justify-center gap-10 md:gap-16 mt-20"
           >
-            <div className="text-center">
-              <div className="text-2xl md:text-3xl font-light text-white">
-                3+
+            {[
+              { value: "3+", label: "Years Experience" },
+              { value: "200+", label: "Weddings" },
+              { value: "50+", label: "Brands" },
+            ].map((item, index) => (
+              <div key={index} className="text-center">
+                <h3 className="text-white text-3xl md:text-4xl font-light">
+                  {item.value}
+                </h3>
+
+                <p className="text-white/50 text-xs uppercase tracking-[0.2em] mt-2">
+                  {item.label}
+                </p>
               </div>
-              <div className="text-xs uppercase tracking-wider text-white/60 mt-1">
-                Years
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl md:text-3xl font-light text-white">
-                200+
-              </div>
-              <div className="text-xs uppercase tracking-wider text-white/60 mt-1">
-                Weddings
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl md:text-3xl font-light text-white">
-                50+
-              </div>
-              <div className="text-xs uppercase tracking-wider text-white/60 mt-1">
-                Brands
-              </div>
-            </div>
+            ))}
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Side Social Links (Vertical) - Optional */}
-      <div className="absolute left-8 bottom-1/2 transform translate-y-1/2 hidden lg:block">
-        <div className="flex flex-col items-center space-y-4">
-          <a
-            href="https://instagram.com/jacques_photographer"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-white/60 hover:text-white transition-colors duration-300 transform hover:scale-110"
-          >
-            <FontAwesomeIcon icon={faInstagram} className="w-5 h-5" />
-          </a>
-          <a
-            href="https://x.com/jacques_photographer"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-white/60 hover:text-white transition-colors duration-300 transform hover:scale-110"
-          >
-            <FontAwesomeIcon icon={faXTwitter} className="w-5 h-5" />
-          </a>
-          <a
-            href="https://facebook.com/KeddyJacques"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-white/60 hover:text-white transition-colors duration-300 transform hover:scale-110"
-          >
-            <FontAwesomeIcon icon={faFacebookF} className="w-5 h-5" />
-          </a>
-          <div className="w-[1px] h-12 bg-white/30 mt-2" />
-        </div>
+      {/* Social Links */}
+      <div className="absolute left-6 top-1/2 -translate-y-1/2 hidden xl:flex flex-col items-center gap-5 z-20">
+        <a
+          href="https://instagram.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white/50 hover:text-white transition-all hover:scale-110"
+        >
+          <FontAwesomeIcon icon={faInstagram} />
+        </a>
+
+        <a
+          href="https://x.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white/50 hover:text-white transition-all hover:scale-110"
+        >
+          <FontAwesomeIcon icon={faXTwitter} />
+        </a>
+
+        <a
+          href="https://facebook.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white/50 hover:text-white transition-all hover:scale-110"
+        >
+          <FontAwesomeIcon icon={faFacebookF} />
+        </a>
+
+        <div className="w-[1px] h-20 bg-white/20" />
       </div>
 
-      {/* Media Type Indicator */}
-      <div className="absolute right-8 bottom-8 hidden lg:block">
-        <div className="flex items-center space-x-3 text-white/60 text-xs uppercase tracking-wider">
-          <FontAwesomeIcon icon={faImage} className="w-4 h-4" />
-          <span>Photo</span>
-          <span className="mx-2">•</span>
-          <FontAwesomeIcon icon={faVideo} className="w-4 h-4" />
-          <span>Video</span>
-        </div>
+      {/* Bottom Right Indicator */}
+      <div className="absolute right-6 bottom-6 hidden lg:flex items-center gap-4 text-white/60 text-xs uppercase tracking-[0.2em] z-20">
+        <FontAwesomeIcon icon={faImage} />
+        <span>Photo</span>
+
+        <span>•</span>
+
+        <FontAwesomeIcon icon={faVideo} />
+        <span>Video</span>
       </div>
     </div>
   );
