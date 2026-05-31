@@ -44,6 +44,7 @@ const EventForm = ({ user }) => {
     // Gallery settings
     allowDownloads: false,
     password: "",
+    passwordSet: false,
     expiresAt: ""
   });
 
@@ -90,7 +91,8 @@ const EventForm = ({ user }) => {
         featured: data.featured || false,
         // Gallery settings
         allowDownloads: data.settings?.allowDownloads || false,
-        password: data.settings?.password || "",
+        password: data.settings?.password === true ? "" : (data.settings?.password || ""),
+        passwordSet: data.settings?.password === true,
         expiresAt: data.settings?.expiresAt ? data.settings.expiresAt.split("T")[0] : ""
       });
 
@@ -212,7 +214,7 @@ const EventForm = ({ user }) => {
       // Add settings object for the backend
       formDataToSend.append('settings', JSON.stringify({
         allowDownloads: formData.allowDownloads,
-        password: formData.password || null,
+        password: formData.passwordSet && !formData.password ? '' : (formData.password || null),
         expiresAt: formData.expiresAt || null
       }));
 
@@ -606,23 +608,26 @@ const EventForm = ({ user }) => {
                   <FontAwesomeIcon icon={faLock} className="w-3 h-3 mr-2" />
                   Password Protection
                 </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Leave empty for no password"
-                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/30 text-white pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                  >
-                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} className="w-4 h-4" />
-                  </button>
-                </div>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder={formData.passwordSet ? "Leave empty to keep current password" : "Set a password to protect this gallery"}
+                      className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/30 text-white pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                    >
+                      <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} className="w-4 h-4" />
+                    </button>
+                  </div>
+                  {formData.passwordSet && !formData.password && (
+                    <p className="text-xs text-green-400 mt-1">A password is currently set. Enter a new one to change it.</p>
+                  )}
               </div>
 
               <div>

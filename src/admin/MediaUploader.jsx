@@ -504,8 +504,8 @@ const MediaUploader = ({ user }) => {
                   or click to select files
                 </p>
                 <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-500">
-                  <span>📸 JPG, PNG, GIF, WEBP (Max 10MB each)</span>
-                  <span>🎥 MP4, MOV, AVI, WEBM (Max 100MB each)</span>
+                  <span>JPG, PNG, GIF, WEBP (Max 10MB each)</span>
+                  <span>MP4, MOV, AVI, WEBM (Max 100MB each)</span>
                 </div>
               </div>
             </div>

@@ -23,8 +23,8 @@ import {
   faFacebookF,
 } from "@fortawesome/free-brands-svg-icons";
 
-import photographerImage from "../assets/photos/photo1.jpg";
-import actionShot from "../assets/photos/photo2.jpg";
+import photographerImage from "../assets/photos/unknown.webp";
+import actionShot from "../assets/photos/unknown.webp";
 
 const About = () => {
   const socialLinks = [
@@ -78,10 +78,11 @@ const About = () => {
   return (
     <div className="pt-20 pb-20 bg-white dark:bg-black">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        {/* Header */}
+          {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           className="text-center mb-16"
         >
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 dark:text-white mb-4">
@@ -94,12 +95,13 @@ const About = () => {
           </p>
         </motion.div>
 
-        {/* Main Bio Section */}
+          {/* Main Bio Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Image Side - Enhanced Gallery Layout */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.6 }}
             className="relative"
           >
@@ -175,7 +177,8 @@ const About = () => {
           {/* Content Side - Enhanced Bio */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="space-y-8"
           >
@@ -211,7 +214,8 @@ const About = () => {
                 <motion.div
                   key={value.title}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.3 + index * 0.1 }}
                   className="text-center p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg"
                 >
@@ -235,7 +239,8 @@ const About = () => {
                 <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.4 + index * 0.1 }}
                   className="text-center"
                 >
@@ -332,7 +337,8 @@ const About = () => {
         {/* Equipment / Gear Section (Optional) */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ delay: 0.6 }}
           className="mt-20 pt-20 border-t border-gray-200 dark:border-gray-800"
         >
@@ -399,7 +405,8 @@ const About = () => {
         {/* Press Kit / Download Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ delay: 0.7 }}
           className="mt-20 p-8 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-200 dark:border-gray-800"
         >

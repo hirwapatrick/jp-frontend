@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -507,6 +508,14 @@ const Work = () => {
                   {event.description}
                 </p>
               )}
+
+              <Link
+                to={`/event/${event._id}`}
+                className="inline-flex items-center space-x-2 text-sm text-white/60 hover:text-white transition-colors mb-4"
+              >
+                <span>View Full Gallery</span>
+                <FontAwesomeIcon icon={faChevronRight} className="w-3 h-3" />
+              </Link>
 
               {/* Media Stats */}
               <div className="flex items-center space-x-4 text-sm text-gray-500">
