@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faCamera, faLock, faEnvelope, faEye, faEyeSlash,
+  faLock, faEnvelope, faEye, faEyeSlash,
   faSpinner, faArrowRight, faExclamationTriangle,
   faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import logoImage from '../assets/photos/logo1.png';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -61,120 +62,189 @@ const Login = ({ onLogin }) => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4">
-      {/* Simple background effect */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-800 via-gray-900 to-black" />
-      
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }} 
-        animate={{ opacity: 1, y: 0 }} 
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black flex items-center justify-center p-4 relative overflow-hidden">
+
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-800/40 via-gray-900/60 to-black" />
+      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+
+      {/* Subtle grid overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         className="w-full max-w-sm relative z-10"
       >
-        {/* Compact Logo Section */}
-        <div className="text-center mb-6">
-          <motion.div 
-            initial={{ scale: 0.9 }} 
-            animate={{ scale: 1 }} 
-            className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg"
+        {/* Logo Section */}
+        <div className="text-center mb-8">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.15, duration: 0.5, ease: "easeOut" }}
+            className="relative inline-flex mb-3"
           >
-            <FontAwesomeIcon icon={faCamera} className="w-7 h-7 text-gray-900" />
+            <div className="absolute inset-0 bg-white/10 rounded-full blur-xl" />
+            <div className="w-24 h-24 relative">
+              <img src={logoImage} alt="Jacques Photography" className="w-full h-full object-contain drop-shadow-2xl" />
+            </div>
           </motion.div>
-          <h2 className="text-xl font-medium text-white">Admin Login</h2>
+          <motion.h2
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.25, duration: 0.4 }}
+            className="text-2xl font-light tracking-wide text-white"
+          >
+            Admin Login
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.35, duration: 0.4 }}
+            className="text-gray-500 text-xs mt-1 tracking-wider uppercase"
+          >
+            Jacques Photography
+          </motion.p>
         </div>
 
         {/* Main Card */}
-        <motion.div 
-          className="bg-gray-800/40 backdrop-blur-sm border border-gray-700 rounded-xl p-5 shadow-xl"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5, ease: "easeOut" }}
+          className="bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl shadow-black/50"
         >
           {error && (
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }}
-              className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center space-x-2 text-sm"
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-5 p-3.5 bg-red-500/15 border border-red-500/25 rounded-xl flex items-center space-x-2.5 text-sm"
             >
               <FontAwesomeIcon icon={faExclamationTriangle} className="w-4 h-4 text-red-400 flex-shrink-0" />
-              <span className="text-red-400">{error}</span>
+              <span className="text-red-300">{error}</span>
             </motion.div>
           )}
 
-
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email Field */}
             <div>
-              <label className="block text-gray-400 text-xs mb-1">
-                <FontAwesomeIcon icon={faEnvelope} className="w-3 h-3 mr-1" />
+              <label className="block text-gray-400 text-xs font-medium mb-1.5 tracking-wide">
+                <FontAwesomeIcon icon={faEnvelope} className="w-3 h-3 mr-1.5" />
                 Email
               </label>
-              <input 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                required
-                className="w-full px-3 py-2.5 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-white/30 text-white text-sm placeholder-gray-500"
-                placeholder="admin@example.com" 
-              />
+              <div className="relative group">
+                <div className="absolute inset-0 bg-white/5 rounded-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full px-3.5 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-white/30 focus:bg-white/[0.07] text-white text-sm placeholder-gray-500 transition-all duration-300"
+                  placeholder="admin@example.com"
+                />
+              </div>
             </div>
 
             {/* Password Field */}
             <div>
-              <label className="block text-gray-400 text-xs mb-1">
-                <FontAwesomeIcon icon={faLock} className="w-3 h-3 mr-1" />
+              <label className="block text-gray-400 text-xs font-medium mb-1.5 tracking-wide">
+                <FontAwesomeIcon icon={faLock} className="w-3 h-3 mr-1.5" />
                 Password
               </label>
-              <div className="relative">
-                <input 
-                  type={showPassword ? 'text' : 'password'} 
+              <div className="relative group">
+                <div className="absolute inset-0 bg-white/5 rounded-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)} 
+                  onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full px-3 py-2.5 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-white/30 text-white text-sm pr-10"
-                  placeholder="••••••••" 
+                  className="w-full px-3.5 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-white/30 focus:bg-white/[0.07] text-white text-sm placeholder-gray-500 pr-12 transition-all duration-300"
+                  placeholder="••••••••"
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors duration-200 p-1"
                 >
-                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} className="w-3.5 h-3.5" />
+                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            {/* Remember Me */}
-            <div className="flex items-center">
-              <input 
-                type="checkbox" 
-                id="remember" 
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-3.5 h-3.5 bg-gray-700 border-gray-600 rounded focus:ring-0 text-white" 
-              />
-              <label htmlFor="remember" className="ml-2 text-xs text-gray-400">
-                Remember me
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center cursor-pointer group">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    id="remember"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div className={`w-4 h-4 border rounded transition-all duration-200 flex items-center justify-center ${
+                    rememberMe
+                      ? 'bg-white border-white'
+                      : 'bg-transparent border-gray-600 group-hover:border-gray-500'
+                  }`}>
+                    {rememberMe && (
+                      <svg className="w-2.5 h-2.5 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+                <span className="ml-2.5 text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-200">
+                  Remember me
+                </span>
               </label>
+              <a href="#" className="text-xs text-gray-500 hover:text-gray-300 transition-colors duration-200">
+                Forgot password?
+              </a>
             </div>
 
             {/* Submit Button */}
-            <button 
-              type="submit" 
+            <motion.button
+              type="submit"
               disabled={isLoading}
-              className={`w-full py-2.5 px-4 bg-white text-gray-900 rounded-lg text-sm font-medium flex items-center justify-center space-x-2 transition-all
-                ${isLoading ? 'opacity-80 cursor-not-allowed' : 'hover:bg-gray-100 hover:shadow-md'}`}
+              whileHover={!isLoading ? { scale: 1.01 } : {}}
+              whileTap={!isLoading ? { scale: 0.99 } : {}}
+              className={`w-full py-3 px-4 rounded-xl text-sm font-medium flex items-center justify-center space-x-2.5 transition-all duration-300
+                ${isLoading
+                  ? 'bg-white/20 text-white/60 cursor-not-allowed'
+                  : 'bg-white text-gray-900 hover:bg-white/90 hover:shadow-lg hover:shadow-white/10 active:bg-white/80'
+                }`}
             >
               {isLoading ? (
-                <><FontAwesomeIcon icon={faSpinner} className="w-3.5 h-3.5 animate-spin" /><span>Signing in...</span></>
+                <><FontAwesomeIcon icon={faSpinner} className="w-4 h-4 animate-spin" /><span>Signing in...</span></>
               ) : (
-                <><span>Sign In</span><FontAwesomeIcon icon={faArrowRight} className="w-3.5 h-3.5" /></>
+                <><span>Sign In</span><FontAwesomeIcon icon={faArrowRight} className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" /></>
               )}
-            </button>
+            </motion.button>
           </form>
         </motion.div>
 
         {/* Footer */}
-        <p className="text-center mt-5 text-gray-600 text-xs">
-          © {new Date().getFullYear()} Jacques Photography <br />
-          <p className='text-blue-500 underline hover:text-blue-100 active:text-red-900'><FontAwesomeIcon icon={faArrowLeft} className="w-3.5 h-3.5" /><Link to="/">Go to Home</Link></p>
-        </p>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.4 }}
+          className="text-center mt-6 space-y-2"
+        >
+          <Link
+            to="/"
+            className="inline-flex items-center space-x-1.5 text-gray-500 hover:text-gray-300 transition-colors duration-200 text-xs group"
+          >
+            <FontAwesomeIcon icon={faArrowLeft} className="w-3 h-3 transition-transform duration-200 group-hover:-translate-x-0.5" />
+            <span>Back to Home</span>
+          </Link>
+          <p className="text-gray-600 text-xs">
+            &copy; {new Date().getFullYear()} Jacques Photography
+          </p>
+        </motion.div>
       </motion.div>
     </div>
   );
