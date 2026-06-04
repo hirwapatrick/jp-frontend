@@ -90,14 +90,15 @@ const Home = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-white/15 bg-white/10 backdrop-blur-md mb-8"
+            transition={{ delay: 0.3 }}
+            className="relative z-20 flex justify-center mt-52 md:mt-60"
           >
-            <FontAwesomeIcon icon={faCamera} className="text-white text-xs" />
-
-            <span className="text-white/80 text-[11px] uppercase tracking-[0.3em]">
-              Based in Rwanda
-            </span>
+            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-white/15 bg-white/10 backdrop-blur-md">
+              <FontAwesomeIcon icon={faCamera} className="text-white text-xs" />
+              <span className="text-white/80 text-[11px] uppercase tracking-[0.3em]">
+                Based in Rwanda
+              </span>
+            </div>
           </motion.div>
           {/* Heading */}
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white font-light leading-[1] tracking-tight">
