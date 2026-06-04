@@ -90,6 +90,7 @@ const Home = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
+<<<<<<< HEAD
             transition={{ delay: 0.2 }}
             className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-white/15 bg-white/10 backdrop-blur-md mb-8"
            >
@@ -98,6 +99,17 @@ const Home = () => {
             <span className="text-white/80 text-[11px] uppercase tracking-[0.3em]">
               Based in Rwanda
             </span>
+=======
+            transition={{ delay: 0.3 }}
+            className="relative z-20 flex justify-center mt-15 md:mt-30"
+          >
+            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-white/15 bg-white/10 backdrop-blur-md">
+              <FontAwesomeIcon icon={faCamera} className="text-white text-xs" />
+              <span className="text-white/80 text-[11px] uppercase tracking-[0.3em]">
+                Based in Rwanda
+              </span>
+            </div>
+>>>>>>> 6a0c83ed92acccccd127760c9bec2ca37a08d912
           </motion.div>
           {/* Heading */}
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white font-light leading-[1] tracking-tight">
