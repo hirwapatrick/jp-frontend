@@ -93,7 +93,7 @@ const Home = () => {
             transition={{ delay: 0.3 }}
             className="relative z-20 flex justify-center mt-52 md:mt-60"
           >
-            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-white/15 bg-white/10 backdrop-blur-md">
+            <div className="inline-flex items-center gap-1 px-5 py-2 rounded-full border border-white/15 bg-white/10 backdrop-blur-md">
               <FontAwesomeIcon icon={faCamera} className="text-white text-xs" />
               <span className="text-white/80 text-[11px] uppercase tracking-[0.3em]">
                 Based in Rwanda
