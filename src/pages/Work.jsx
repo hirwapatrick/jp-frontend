@@ -455,7 +455,7 @@ const Work = () => {
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
                   className={`
-                    px-5 py-2.5 rounded-full text-sm transition-all duration-300
+                    px-5 py-2.5 rounded-full text-sm transition-all duration-300 capitalize
                     ${
                       selectedCategory === category.id
                         ? "bg-white text-black shadow-lg"
