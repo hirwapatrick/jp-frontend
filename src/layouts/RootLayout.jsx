@@ -12,14 +12,16 @@ const RootLayout = () => {
   const isAdmin = location.pathname.startsWith("/admin");
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    // Added !bg-black to enforce pure black over any global theme changes
+    <div className="min-h-screen !bg-black bg-black text-white">
       {/* Hide Navigation on /admin */}
       {!isAdmin && <Navigation />}
 
       <AnimatePresence mode="wait">
         <motion.main
           key={location.pathname}
-          className="bg-black"
+          // Added !bg-black here to isolate the page content wrapper
+          className="!bg-black bg-black"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
