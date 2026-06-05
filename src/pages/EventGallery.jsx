@@ -140,6 +140,7 @@ const EventGallery = () => {
     }
   };
 
+  // FIXED: Preserve original aspect ratio by removing c_fill
   const getOptimizedImageUrl = (url, width = 800) => {
     if (!url) return "";
     if (url.includes("cloudinary")) {
@@ -599,7 +600,7 @@ const EventGallery = () => {
               </div>
             </div>
 
-            {/* Thumbnail Strip */}
+            {/* Thumbnail Strip - with variable width and object-contain */}
             {media.length > 1 && (
               <div className="absolute bottom-6 left-0 right-0 flex justify-center">
                 <div 
@@ -619,9 +620,9 @@ const EventGallery = () => {
                       style={{ height: '80px' }}
                     >
                       <img 
-                        src={item.thumbnail?.url || getOptimizedImageUrl(item.url, 150)} 
+                        src={item.thumbnail?.url || getOptimizedImageUrl(item.url, 200)} 
                         alt="" 
-                        className="h-full w-auto object-contain" 
+                        className="h-full w-auto max-w-none object-contain" 
                       />
                     </button>
                   ))}
