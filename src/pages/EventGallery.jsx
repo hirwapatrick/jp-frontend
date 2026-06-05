@@ -47,8 +47,7 @@ const EventGallery = () => {
   const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(1);
   const [showShareMenu, setShowShareMenu] = useState(false);
-  const [isZoomed, setIsZoomed] = useState(false);
-  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const [imageAspectRatio, setImageAspectRatio] = useState(null);
 
   const videoRef = useRef(null);
   const lightboxRef = useRef(null);
@@ -156,7 +155,7 @@ const EventGallery = () => {
     setLightboxOpen(true);
     setIsPlaying(false);
     setProgress(0);
-    setIsZoomed(false);
+    setImageAspectRatio(null);
     document.body.style.overflow = "hidden";
   };
 
@@ -165,12 +164,32 @@ const EventGallery = () => {
     setIsFullscreen(false);
     setShowInfo(false);
     setShowShareMenu(false);
-    setIsZoomed(false);
     document.body.style.overflow = "auto";
   };
 
-  const nextMedia = () => setCurrentIndex((p) => (p === media.length - 1 ? 0 : p + 1));
-  const prevMedia = () => setCurrentIndex((p) => (p === 0 ? media.length - 1 : p - 1));
+  const nextMedia = () => {
+    setCurrentIndex((p) => (p === media.length - 1 ? 0 : p + 1));
+    setShowInfo(false);
+    setImageAspectRatio(null);
+  };
+  
+  const prevMedia = () => {
+    setCurrentIndex((p) => (p === 0 ? media.length - 1 : p - 1));
+    setShowInfo(false);
+    setImageAspectRatio(null);
+  };
+
+  const handleThumbnailClick = (idx) => {
+    setCurrentIndex(idx);
+    setShowInfo(false);
+    setImageAspectRatio(null);
+  };
+
+  const handleImageLoad = (e) => {
+    const img = e.target;
+    const ratio = img.naturalWidth / img.naturalHeight;
+    setImageAspectRatio(ratio);
+  };
 
   useEffect(() => {
     if (thumbnailStripRef.current && currentIndex >= 0) {
@@ -211,6 +230,30 @@ const EventGallery = () => {
       else videoRef.current.play();
       setIsPlaying(!isPlaying);
     }
+  };
+
+  const handleVolumeChange = (e) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (videoRef.current) {
+      videoRef.current.volume = newVolume;
+    }
+    setIsMuted(newVolume === 0);
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      const progress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      setProgress(progress);
+    }
+  };
+
+  const handleSeek = (e) => {
+    const newTime = (parseFloat(e.target.value) / 100) * videoRef.current.duration;
+    if (videoRef.current) {
+      videoRef.current.currentTime = newTime;
+    }
+    setProgress(parseFloat(e.target.value));
   };
 
   if (loading) {
@@ -445,112 +488,144 @@ const EventGallery = () => {
               </>
             )}
 
-            <div className="relative w-full h-full flex items-center justify-center">
-              {getEmbedUrl(media[currentIndex]) ? (
-                <div className="relative w-full max-w-6xl" style={{ height: 0, paddingBottom: "56.25%" }}>
-                  <iframe
-                    src={getEmbedUrl(media[currentIndex])}
-                    title={media[currentIndex]?.title || "Video"}
-                    className="absolute top-0 left-0 w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    frameBorder="0"
-                  />
-                </div>
-              ) : media[currentIndex]?.type === "video" ? (
-                <div className="relative max-w-6xl w-full">
-                  <video
-                    ref={videoRef}
-                    src={media[currentIndex]?.url}
-                    poster={getOptimizedImageUrl(media[currentIndex]?.thumbnail?.url, 1920)}
-                    className="w-full rounded-lg"
-                    onTimeUpdate={() => {
-                      if (videoRef.current) setProgress((videoRef.current.currentTime / videoRef.current.duration) * 100);
-                    }}
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                    onClick={togglePlay}
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                    <input type="range" min="0" max="100" value={progress}
-                      onChange={(e) => { if (videoRef.current) videoRef.current.currentTime = (e.target.value / 100) * videoRef.current.duration; setProgress(e.target.value); }}
-                      className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer mb-4" />
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <button onClick={togglePlay} className="text-white hover:text-white/80">
-                          <FontAwesomeIcon icon={isPlaying ? faPlay : faPlay} className="w-4 h-4" />
-                        </button>
-                        <div className="flex items-center space-x-2">
-                          <button onClick={() => { if (videoRef.current) { videoRef.current.muted = !isMuted; setIsMuted(!isMuted); } }} className="text-white hover:text-white/80">
-                            <FontAwesomeIcon icon={isMuted ? faVolumeMute : faVolumeUp} className="w-4 h-4" />
+            {/* Main Content - Fixed Container */}
+            <div className="relative w-full h-full flex items-center justify-center p-20">
+              <div className="relative max-w-7xl max-h-[85vh] w-full h-full flex items-center justify-center">
+                {getEmbedUrl(media[currentIndex]) ? (
+                  <div className="relative w-full" style={{ height: 0, paddingBottom: "56.25%" }}>
+                    <iframe
+                      src={getEmbedUrl(media[currentIndex])}
+                      title={media[currentIndex]?.title || "Video"}
+                      className="absolute top-0 left-0 w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      frameBorder="0"
+                    />
+                  </div>
+                ) : media[currentIndex]?.type === "video" ? (
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <video
+                      ref={videoRef}
+                      src={media[currentIndex]?.url}
+                      poster={getOptimizedImageUrl(media[currentIndex]?.thumbnail?.url, 1920)}
+                      className="max-w-full max-h-full object-contain"
+                      onTimeUpdate={handleTimeUpdate}
+                      onPlay={() => setIsPlaying(true)}
+                      onPause={() => setIsPlaying(false)}
+                      onClick={togglePlay}
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                      <input 
+                        type="range" 
+                        min="0" 
+                        max="100" 
+                        value={progress}
+                        onChange={handleSeek}
+                        className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer mb-4" 
+                      />
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <button onClick={togglePlay} className="text-white hover:text-white/80">
+                            <FontAwesomeIcon icon={isPlaying ? faPlay : faPlay} className="w-4 h-4" />
                           </button>
-                          <input type="range" min="0" max="1" step="0.1" value={volume}
-                            onChange={(e) => { const v = e.target.value; setVolume(v); if (videoRef.current) videoRef.current.volume = v; }}
-                            className="w-20 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer" />
+                          <div className="flex items-center space-x-2">
+                            <button onClick={() => { if (videoRef.current) { videoRef.current.muted = !isMuted; setIsMuted(!isMuted); } }} className="text-white hover:text-white/80">
+                              <FontAwesomeIcon icon={isMuted ? faVolumeMute : faVolumeUp} className="w-4 h-4" />
+                            </button>
+                            <input 
+                              type="range" 
+                              min="0" 
+                              max="1" 
+                              step="0.1" 
+                              value={volume}
+                              onChange={handleVolumeChange}
+                              className="w-20 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer" 
+                            />
+                          </div>
+                          <span className="text-white/80 text-sm">
+                            {videoRef.current && (
+                              <>
+                                {formatDuration(videoRef.current.currentTime)} /{" "}
+                                {formatDuration(videoRef.current.duration)}
+                              </>
+                            )}
+                          </span>
                         </div>
+                        {canDownload && (
+                          <a href={media[currentIndex]?.url} download
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-white/70 hover:text-white transition-colors">
+                            <FontAwesomeIcon icon={faDownload} className="w-4 h-4" />
+                          </a>
+                        )}
                       </div>
-                      {canDownload && (
-                        <a href={media[currentIndex]?.url} download
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-white/70 hover:text-white transition-colors">
-                          <FontAwesomeIcon icon={faDownload} className="w-4 h-4" />
-                        </a>
-                      )}
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div className={`relative max-w-7xl max-h-[90vh] ${isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"}`}
-                  onClick={() => setIsZoomed(!isZoomed)}
-                  onMouseMove={(e) => {
-                    if (!isZoomed) return;
-                    const rect = e.target.getBoundingClientRect();
-                    setZoomPosition({ x: ((e.clientX - rect.left) / rect.width) * 100, y: ((e.clientY - rect.top) / rect.height) * 100 });
-                  }}>
-                  <img
-                    src={getOptimizedImageUrl(media[currentIndex]?.url, isZoomed ? 2400 : 1920)}
-                    alt={media[currentIndex]?.title || "Photo"}
-                    className={`max-w-full max-h-[90vh] object-contain transition-transform duration-300 ${isZoomed ? "scale-150" : "scale-100"}`}
-                    style={isZoomed ? { transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%` } : {}}
-                  />
-                  {canDownload && (
-                    <a href={media[currentIndex]?.url} download
-                      onClick={(e) => e.stopPropagation()}
-                      className="absolute bottom-4 right-4 text-white/70 hover:text-white bg-black/50 p-2 rounded-full transition-colors">
-                      <FontAwesomeIcon icon={faDownload} className="w-4 h-4" />
-                    </a>
-                  )}
-                </div>
-              )}
-
-              <AnimatePresence>
-                {showInfo && (
-                  <motion.div
-                    initial={{ opacity: 0, x: 300 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 300 }}
-                    className="absolute right-0 top-0 bottom-0 w-80 bg-black/90 backdrop-blur-lg p-6 overflow-y-auto"
-                  >
-                    <h3 className="text-xl font-light mb-4">{media[currentIndex]?.title || "Untitled"}</h3>
-                    {media[currentIndex]?.description && <p className="text-gray-400 text-sm mb-4">{media[currentIndex].description}</p>}
-                    <div className="space-y-3 text-sm">
-                      <div><span className="text-gray-500">Event</span><p className="text-white">{event.eventName}</p></div>
-                      {event.eventType && <div><span className="text-gray-500">Type</span><p className="text-white">{event.eventType}</p></div>}
-                      {event.date && <div><span className="text-gray-500">Date</span><p className="text-white">{formatDate(event.date)}</p></div>}
-                      {event.location && <div><span className="text-gray-500">Location</span><p className="text-white">{event.location}</p></div>}
-                    </div>
-                  </motion.div>
+                ) : (
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <img
+                      src={getOptimizedImageUrl(media[currentIndex]?.url, 1920)}
+                      alt={media[currentIndex]?.title || "Photo"}
+                      className="max-w-full max-h-full object-contain transition-opacity duration-300"
+                      onLoad={handleImageLoad}
+                      style={{ opacity: imageAspectRatio ? 1 : 0 }}
+                    />
+                    {canDownload && (
+                      <a href={media[currentIndex]?.url} download
+                        onClick={(e) => e.stopPropagation()}
+                        className="absolute bottom-4 right-4 text-white/70 hover:text-white bg-black/50 p-2 rounded-full transition-colors">
+                        <FontAwesomeIcon icon={faDownload} className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
                 )}
-              </AnimatePresence>
+
+                <AnimatePresence>
+                  {showInfo && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 300 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 300 }}
+                      className="absolute right-0 top-0 bottom-0 w-80 bg-black/90 backdrop-blur-lg p-6 overflow-y-auto"
+                    >
+                      <h3 className="text-xl font-light mb-4">{media[currentIndex]?.title || "Untitled"}</h3>
+                      {media[currentIndex]?.description && <p className="text-gray-400 text-sm mb-4">{media[currentIndex].description}</p>}
+                      <div className="space-y-3 text-sm">
+                        <div><span className="text-gray-500">Event</span><p className="text-white">{event.eventName}</p></div>
+                        {event.eventType && <div><span className="text-gray-500">Type</span><p className="text-white">{event.eventType}</p></div>}
+                        {event.date && <div><span className="text-gray-500">Date</span><p className="text-white">{formatDate(event.date)}</p></div>}
+                        {event.location && <div><span className="text-gray-500">Location</span><p className="text-white">{event.location}</p></div>}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
 
+            {/* Thumbnail Strip - with variable width and object-contain */}
             {media.length > 1 && (
               <div className="absolute bottom-6 left-0 right-0 flex justify-center">
-                <div ref={thumbnailStripRef} className="flex space-x-2 overflow-x-auto px-4 py-2 max-w-4xl" style={{ scrollbarWidth: "none" }}>
+                <div 
+                  ref={thumbnailStripRef} 
+                  className="flex space-x-3 overflow-x-auto px-4 py-3 max-w-5xl"
+                  style={{ 
+                    scrollbarWidth: 'thin', 
+                    msOverflowStyle: 'auto',
+                    WebkitOverflowScrolling: 'touch'
+                  }}
+                >
                   {media.map((item, idx) => (
-                    <button key={idx} onClick={(e) => { e.stopPropagation(); setCurrentIndex(idx); }}
-                      className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden transition-all duration-300 ${idx === currentIndex ? "ring-2 ring-white scale-110" : "opacity-50 hover:opacity-100"}`}>
-                      <img src={item.thumbnail?.url || getOptimizedImageUrl(item.url, 100)} alt="" className="w-full h-full object-cover" />
+                    <button 
+                      key={idx} 
+                      onClick={() => handleThumbnailClick(idx)}
+                      className={`relative flex-shrink-0 rounded-lg overflow-hidden transition-all duration-200 ${idx === currentIndex ? "ring-2 ring-white" : "opacity-50 hover:opacity-100"}`}
+                      style={{ height: '80px' }}
+                    >
+                      <img 
+                        src={item.thumbnail?.url || getOptimizedImageUrl(item.url, 150)} 
+                        alt="" 
+                        className="h-full w-auto object-contain" 
+                      />
                     </button>
                   ))}
                 </div>
@@ -565,6 +640,14 @@ const EventGallery = () => {
       </AnimatePresence>
     </div>
   );
+};
+
+// Helper function for duration formatting
+const formatDuration = (seconds) => {
+  if (!seconds) return "0:00";
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 };
 
 export default EventGallery;
