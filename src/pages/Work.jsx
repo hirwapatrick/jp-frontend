@@ -52,8 +52,6 @@ const Work = () => {
   const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(1);
   const [showShareMenu, setShowShareMenu] = useState(false);
-  const [isZoomed, setIsZoomed] = useState(false);
-  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   
   const videoRef = useRef(null);
   const lightboxRef = useRef(null);
@@ -191,6 +189,9 @@ const Work = () => {
     return url;
   };
 
+  // Get image aspect ratio
+  const [imageAspectRatio, setImageAspectRatio] = useState(null);
+
   // Get YouTube thumbnail
   const getYouTubeThumbnail = (url) => {
     const regExp = /(?:youtube\.com\/(?:.*v=|embed\/)|youtu\.be\/)([^"&?\/\s]{11})/;
@@ -214,7 +215,7 @@ const Work = () => {
     setLightboxOpen(true);
     setIsPlaying(false);
     setProgress(0);
-    setIsZoomed(false);
+    setImageAspectRatio(null);
     document.body.style.overflow = "hidden";
   };
 
@@ -223,7 +224,6 @@ const Work = () => {
     setIsFullscreen(false);
     setShowInfo(false);
     setShowShareMenu(false);
-    setIsZoomed(false);
     document.body.style.overflow = "auto";
   };
 
@@ -231,16 +231,30 @@ const Work = () => {
     setCurrentMediaIndex((prev) =>
       prev === currentEventMedia.length - 1 ? 0 : prev + 1,
     );
-    setIsZoomed(false);
     setShowInfo(false);
+    setImageAspectRatio(null);
   };
 
   const prevMedia = () => {
     setCurrentMediaIndex((prev) =>
       prev === 0 ? currentEventMedia.length - 1 : prev - 1,
     );
-    setIsZoomed(false);
     setShowInfo(false);
+    setImageAspectRatio(null);
+  };
+
+  // Handle thumbnail click without any animation
+  const handleThumbnailClick = (idx) => {
+    setCurrentMediaIndex(idx);
+    setShowInfo(false);
+    setImageAspectRatio(null);
+  };
+
+  // Load image to get natural aspect ratio
+  const handleImageLoad = (e) => {
+    const img = e.target;
+    const ratio = img.naturalWidth / img.naturalHeight;
+    setImageAspectRatio(ratio);
   };
 
   // Toggle fullscreen
@@ -301,15 +315,6 @@ const Work = () => {
     setProgress(parseFloat(e.target.value));
   };
 
-  // Handle image zoom
-  const handleImageZoom = (e) => {
-    if (!isZoomed) return;
-    const rect = e.target.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setZoomPosition({ x, y });
-  };
-
   // Share media
   const shareMedia = async () => {
     const media = currentEventMedia[currentMediaIndex];
@@ -360,12 +365,6 @@ const Work = () => {
         case "I":
           setShowInfo(!showInfo);
           break;
-        case "z":
-        case "Z":
-          if (currentEventMedia[currentMediaIndex]?.type === "image") {
-            setIsZoomed(!isZoomed);
-          }
-          break;
         default:
           break;
       }
@@ -373,7 +372,7 @@ const Work = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [lightboxOpen, currentMediaIndex, isPlaying, showInfo, isZoomed]);
+  }, [lightboxOpen, currentMediaIndex, isPlaying, showInfo]);
 
   // Auto-scroll thumbnail strip
   useEffect(() => {
@@ -722,264 +721,255 @@ const Work = () => {
                 </>
               )}
 
-              {/* Main Content */}
-              <div className="relative w-full h-full flex items-center justify-center">
-                {getEmbedUrl(currentEventMedia[currentMediaIndex]) ? (
-                  // External Video (YouTube/Vimeo)
-                  <div className="relative w-full max-w-6xl" style={{ height: '0', paddingBottom: '56.25%' }}>
-                    <iframe
-                      src={getEmbedUrl(currentEventMedia[currentMediaIndex])}
-                      title={currentEventMedia[currentMediaIndex]?.title || "Video player"}
-                      className="absolute top-0 left-0 w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      frameBorder="0"
-                    />
-                  </div>
-                ) : currentEventMedia[currentMediaIndex]?.type === "video" ? (
-                  // Direct Video File
-                  <div className="relative max-w-6xl w-full">
-                    <video
-                      ref={videoRef}
-                      src={currentEventMedia[currentMediaIndex]?.url}
-                      poster={getOptimizedImageUrl(
-                        currentEventMedia[currentMediaIndex]?.thumbnail?.url,
-                        1920,
-                        1080
-                      )}
-                      className="w-full rounded-lg"
-                      onTimeUpdate={handleTimeUpdate}
-                      onPlay={() => setIsPlaying(true)}
-                      onPause={() => setIsPlaying(false)}
-                      onClick={togglePlay}
-                    />
-                    
-                    {/* Custom Video Controls */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                      {/* Progress Bar */}
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={progress}
-                        onChange={handleSeek}
-                        className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer mb-4"
+              {/* Main Content - Fixed Container */}
+              <div className="relative w-full h-full flex items-center justify-center p-20">
+                <div className="relative max-w-7xl max-h-[85vh] w-full h-full flex items-center justify-center">
+                  {getEmbedUrl(currentEventMedia[currentMediaIndex]) ? (
+                    // External Video (YouTube/Vimeo)
+                    <div className="relative w-full" style={{ height: '0', paddingBottom: '56.25%' }}>
+                      <iframe
+                        src={getEmbedUrl(currentEventMedia[currentMediaIndex])}
+                        title={currentEventMedia[currentMediaIndex]?.title || "Video player"}
+                        className="absolute top-0 left-0 w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        frameBorder="0"
+                      />
+                    </div>
+                  ) : currentEventMedia[currentMediaIndex]?.type === "video" ? (
+                    // Direct Video File
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <video
+                        ref={videoRef}
+                        src={currentEventMedia[currentMediaIndex]?.url}
+                        poster={getOptimizedImageUrl(
+                          currentEventMedia[currentMediaIndex]?.thumbnail?.url,
+                          1920,
+                          1080
+                        )}
+                        className="max-w-full max-h-full object-contain"
+                        onTimeUpdate={handleTimeUpdate}
+                        onPlay={() => setIsPlaying(true)}
+                        onPause={() => setIsPlaying(false)}
+                        onClick={togglePlay}
                       />
                       
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          {/* Play/Pause */}
-                          <button
-                            onClick={togglePlay}
-                            className="text-white hover:text-white/80 transition-colors"
-                          >
-                            <FontAwesomeIcon 
-                              icon={isPlaying ? faPlay : faPlay} 
-                              className="w-4 h-4" 
-                            />
-                          </button>
-                          
-                          {/* Volume */}
-                          <div className="flex items-center space-x-2">
+                      {/* Custom Video Controls */}
+                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                        {/* Progress Bar */}
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={progress}
+                          onChange={handleSeek}
+                          className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer mb-4"
+                        />
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            {/* Play/Pause */}
                             <button
-                              onClick={toggleMute}
+                              onClick={togglePlay}
                               className="text-white hover:text-white/80 transition-colors"
                             >
                               <FontAwesomeIcon 
-                                icon={isMuted ? faVolumeMute : faVolumeUp} 
+                                icon={isPlaying ? faPlay : faPlay} 
                                 className="w-4 h-4" 
                               />
                             </button>
-                            <input
-                              type="range"
-                              min="0"
-                              max="1"
-                              step="0.1"
-                              value={volume}
-                              onChange={handleVolumeChange}
-                              className="w-20 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
-                            />
-                          </div>
-                          
-                          {/* Time */}
-                          <span className="text-white/80 text-sm">
-                            {videoRef.current && (
-                              <>
-                                {formatDuration(videoRef.current.currentTime)} /{" "}
-                                {formatDuration(videoRef.current.duration)}
-                              </>
-                            )}
-                          </span>
-                        </div>
-                        
-                        {/* Download Button */}
-                        <a
-                          href={currentEventMedia[currentMediaIndex]?.url}
-                          download
-                          className="text-white/70 hover:text-white transition-colors"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <FontAwesomeIcon icon={faDownload} className="w-4 h-4" />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  // Image
-                  <div 
-                    className={`relative max-w-7xl max-h-[90vh] ${
-                      isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"
-                    }`}
-                    onClick={() => setIsZoomed(!isZoomed)}
-                    onMouseMove={handleImageZoom}
-                  >
-                    <img
-                      src={getOptimizedImageUrl(
-                        currentEventMedia[currentMediaIndex]?.url,
-                        isZoomed ? 2400 : 1920,
-                        isZoomed ? 2400 : 1080
-                      )}
-                      alt={currentEventMedia[currentMediaIndex]?.title || "Media"}
-                      className={`max-w-full max-h-[90vh] object-contain transition-transform duration-300 ${
-                        isZoomed ? "scale-150" : "scale-100"
-                      }`}
-                      style={
-                        isZoomed
-                          ? {
-                              transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                            }
-                          : {}
-                      }
-                    />
-                    
-                    {/* Download Button */}
-                    <a
-                      href={currentEventMedia[currentMediaIndex]?.url}
-                      download
-                      className="absolute bottom-4 right-4 text-white/70 hover:text-white transition-colors bg-black/50 p-2 rounded-full"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <FontAwesomeIcon icon={faDownload} className="w-4 h-4" />
-                    </a>
-                  </div>
-                )}
-
-                {/* Info Panel */}
-                <AnimatePresence>
-                  {showInfo && (
-                    <motion.div
-                      initial={{ opacity: 0, x: 300 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 300 }}
-                      className="absolute right-0 top-0 bottom-0 w-80 bg-black/90 backdrop-blur-lg p-6 overflow-y-auto"
-                    >
-                      <h3 className="text-xl font-light mb-4">
-                        {currentEventMedia[currentMediaIndex]?.title || "Untitled"}
-                      </h3>
-                      
-                      {currentEventMedia[currentMediaIndex]?.description && (
-                        <div className="mb-4">
-                          <p className="text-gray-400 text-sm">
-                            {currentEventMedia[currentMediaIndex].description}
-                          </p>
-                        </div>
-                      )}
-                      
-                      <div className="space-y-3 text-sm">
-                        {currentEvent && (
-                          <>
-                            <div>
-                              <span className="text-gray-500">Event</span>
-                              <p className="text-white">{currentEvent.eventName}</p>
+                            
+                            {/* Volume */}
+                            <div className="flex items-center space-x-2">
+                              <button
+                                onClick={toggleMute}
+                                className="text-white hover:text-white/80 transition-colors"
+                              >
+                                <FontAwesomeIcon 
+                                  icon={isMuted ? faVolumeMute : faVolumeUp} 
+                                  className="w-4 h-4" 
+                                />
+                              </button>
+                              <input
+                                type="range"
+                                min="0"
+                                max="1"
+                                step="0.1"
+                                value={volume}
+                                onChange={handleVolumeChange}
+                                className="w-20 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
+                              />
                             </div>
                             
-                            {currentEvent.eventType && (
-                              <div>
-                                <span className="text-gray-500">Type</span>
-                                <p className="text-white">{currentEvent.eventType}</p>
-                              </div>
-                            )}
-                            
-                            {currentEvent.date && (
-                              <div>
-                                <span className="text-gray-500">Date</span>
-                                <p className="text-white">{formatDate(currentEvent.date)}</p>
-                              </div>
-                            )}
-                            
-                            {currentEvent.location && (
-                              <div>
-                                <span className="text-gray-500">Location</span>
-                                <p className="text-white">{currentEvent.location}</p>
-                              </div>
-                            )}
-                          </>
-                        )}
-                        
-                        <div>
-                          <span className="text-gray-500">Type</span>
-                          <p className="text-white capitalize">
-                            {currentEventMedia[currentMediaIndex]?.type}
-                          </p>
+                            {/* Time */}
+                            <span className="text-white/80 text-sm">
+                              {videoRef.current && (
+                                <>
+                                  {formatDuration(videoRef.current.currentTime)} /{" "}
+                                  {formatDuration(videoRef.current.duration)}
+                                </>
+                              )}
+                            </span>
+                          </div>
+                          
+                          {/* Download Button */}
+                          <a
+                            href={currentEventMedia[currentMediaIndex]?.url}
+                            download
+                            className="text-white/70 hover:text-white transition-colors"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <FontAwesomeIcon icon={faDownload} className="w-4 h-4" />
+                          </a>
                         </div>
-                        
-                        {currentEventMedia[currentMediaIndex]?.type === "video" && (
-                          <>
-                            {currentEventMedia[currentMediaIndex]?.duration && (
-                              <div>
-                                <span className="text-gray-500">Duration</span>
-                                <p className="text-white">
-                                  {formatDuration(currentEventMedia[currentMediaIndex].duration)}
-                                </p>
-                              </div>
-                            )}
-                            
-                            {currentEventMedia[currentMediaIndex]?.platform && (
-                              <div>
-                                <span className="text-gray-500">Platform</span>
-                                <p className="text-white">
-                                  {currentEventMedia[currentMediaIndex].platform}
-                                </p>
-                              </div>
-                            )}
-                          </>
-                        )}
                       </div>
-                    </motion.div>
+                    </div>
+                  ) : (
+                    // Image - with object-contain to preserve aspect ratio
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <img
+                        src={getOptimizedImageUrl(
+                          currentEventMedia[currentMediaIndex]?.url,
+                          1920,
+                          1080
+                        )}
+                        alt={currentEventMedia[currentMediaIndex]?.title || "Media"}
+                        className="max-w-full max-h-full object-contain transition-opacity duration-300"
+                        onLoad={handleImageLoad}
+                        style={{ opacity: imageAspectRatio ? 1 : 0 }}
+                      />
+                      
+                      {/* Download Button */}
+                      <a
+                        href={currentEventMedia[currentMediaIndex]?.url}
+                        download
+                        className="absolute bottom-4 right-4 text-white/70 hover:text-white transition-colors bg-black/50 p-2 rounded-full"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <FontAwesomeIcon icon={faDownload} className="w-4 h-4" />
+                      </a>
+                    </div>
                   )}
-                </AnimatePresence>
+
+                  {/* Info Panel */}
+                  <AnimatePresence>
+                    {showInfo && (
+                      <motion.div
+                        initial={{ opacity: 0, x: 300 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 300 }}
+                        className="absolute right-0 top-0 bottom-0 w-80 bg-black/90 backdrop-blur-lg p-6 overflow-y-auto"
+                      >
+                        <h3 className="text-xl font-light mb-4">
+                          {currentEventMedia[currentMediaIndex]?.title || "Untitled"}
+                        </h3>
+                        
+                        {currentEventMedia[currentMediaIndex]?.description && (
+                          <div className="mb-4">
+                            <p className="text-gray-400 text-sm">
+                              {currentEventMedia[currentMediaIndex].description}
+                            </p>
+                          </div>
+                        )}
+                        
+                        <div className="space-y-3 text-sm">
+                          {currentEvent && (
+                            <>
+                              <div>
+                                <span className="text-gray-500">Event</span>
+                                <p className="text-white">{currentEvent.eventName}</p>
+                              </div>
+                              
+                              {currentEvent.eventType && (
+                                <div>
+                                  <span className="text-gray-500">Type</span>
+                                  <p className="text-white">{currentEvent.eventType}</p>
+                                </div>
+                              )}
+                              
+                              {currentEvent.date && (
+                                <div>
+                                  <span className="text-gray-500">Date</span>
+                                  <p className="text-white">{formatDate(currentEvent.date)}</p>
+                                </div>
+                              )}
+                              
+                              {currentEvent.location && (
+                                <div>
+                                  <span className="text-gray-500">Location</span>
+                                  <p className="text-white">{currentEvent.location}</p>
+                                </div>
+                              )}
+                            </>
+                          )}
+                          
+                          <div>
+                            <span className="text-gray-500">Type</span>
+                            <p className="text-white capitalize">
+                              {currentEventMedia[currentMediaIndex]?.type}
+                            </p>
+                          </div>
+                          
+                          {currentEventMedia[currentMediaIndex]?.type === "video" && (
+                            <>
+                              {currentEventMedia[currentMediaIndex]?.duration && (
+                                <div>
+                                  <span className="text-gray-500">Duration</span>
+                                  <p className="text-white">
+                                    {formatDuration(currentEventMedia[currentMediaIndex].duration)}
+                                  </p>
+                                </div>
+                              )}
+                              
+                              {currentEventMedia[currentMediaIndex]?.platform && (
+                                <div>
+                                  <span className="text-gray-500">Platform</span>
+                                  <p className="text-white">
+                                    {currentEventMedia[currentMediaIndex].platform}
+                                  </p>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
 
-              {/* Thumbnail Strip */}
+              {/* Thumbnail Strip - with variable width and object-contain */}
               {currentEventMedia.length > 1 && (
                 <div className="absolute bottom-6 left-0 right-0 flex justify-center">
                   <div
                     ref={thumbnailStripRef}
-                    className="flex space-x-2 overflow-x-auto px-4 py-2 max-w-4xl"
-                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                    className="flex space-x-3 overflow-x-auto px-4 py-3 max-w-5xl"
+                    style={{ 
+                      scrollbarWidth: 'thin', 
+                      msOverflowStyle: 'auto',
+                      WebkitOverflowScrolling: 'touch'
+                    }}
                   >
                     {currentEventMedia.map((media, idx) => (
                       <button
                         key={idx}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setCurrentMediaIndex(idx);
-                        }}
+                        onClick={() => handleThumbnailClick(idx)}
                         className={`
-                          relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden
-                          transition-all duration-300
+                          relative flex-shrink-0 rounded-lg overflow-hidden
+                          transition-all duration-200
                           ${idx === currentMediaIndex 
-                            ? "ring-2 ring-white scale-110" 
+                            ? "ring-2 ring-white" 
                             : "opacity-50 hover:opacity-100"
                           }
                         `}
+                        style={{ height: '80px' }}
                       >
                         {media.type === "video" ? (
                           <>
                             <img
                               src={media.thumbnail?.url || getYouTubeThumbnail(media.url) || media.url}
                               alt=""
-                              className="w-full h-full object-cover"
+                              className="h-full w-auto object-contain"
                             />
                             <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                               <FontAwesomeIcon icon={faPlay} className="w-4 h-4 text-white" />
@@ -987,9 +977,9 @@ const Work = () => {
                           </>
                         ) : (
                           <img
-                            src={media.thumbnail?.url || getOptimizedImageUrl(media.url, 100, 100)}
+                            src={media.thumbnail?.url || getOptimizedImageUrl(media.url, 150, 150)}
                             alt=""
-                            className="w-full h-full object-cover"
+                            className="h-full w-auto object-contain"
                           />
                         )}
                       </button>
@@ -1000,7 +990,7 @@ const Work = () => {
 
               {/* Keyboard Shortcuts Hint */}
               <div className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs text-white/60">
-                ← → navigate • ESC close • F fullscreen • I info • Z zoom
+                ← → navigate • ESC close • F fullscreen • I info
               </div>
             </motion.div>
           )}
