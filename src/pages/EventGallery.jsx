@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -47,7 +47,6 @@ const EventGallery = () => {
   const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(1);
   const [showShareMenu, setShowShareMenu] = useState(false);
-  const [imageAspectRatio, setImageAspectRatio] = useState(null);
 
   const videoRef = useRef(null);
   const lightboxRef = useRef(null);
@@ -112,6 +111,13 @@ const EventGallery = () => {
     }
   };
 
+  const formatDuration = (seconds) => {
+    if (!seconds) return "0:00";
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
   const getEmbedUrl = (media) => {
     if (!media?.url) return "";
     const url = media.url.trim();
@@ -155,7 +161,6 @@ const EventGallery = () => {
     setLightboxOpen(true);
     setIsPlaying(false);
     setProgress(0);
-    setImageAspectRatio(null);
     document.body.style.overflow = "hidden";
   };
 
@@ -170,25 +175,16 @@ const EventGallery = () => {
   const nextMedia = () => {
     setCurrentIndex((p) => (p === media.length - 1 ? 0 : p + 1));
     setShowInfo(false);
-    setImageAspectRatio(null);
   };
   
   const prevMedia = () => {
     setCurrentIndex((p) => (p === 0 ? media.length - 1 : p - 1));
     setShowInfo(false);
-    setImageAspectRatio(null);
   };
 
   const handleThumbnailClick = (idx) => {
     setCurrentIndex(idx);
     setShowInfo(false);
-    setImageAspectRatio(null);
-  };
-
-  const handleImageLoad = (e) => {
-    const img = e.target;
-    const ratio = img.naturalWidth / img.naturalHeight;
-    setImageAspectRatio(ratio);
   };
 
   useEffect(() => {
@@ -441,6 +437,7 @@ const EventGallery = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
+            {/* Top Bar Controls */}
             <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-10 bg-gradient-to-b from-black/50 to-transparent">
               <div className="flex items-center space-x-3">
                 <span className="text-white/80 text-sm">{event.eventName}</span>
@@ -477,6 +474,7 @@ const EventGallery = () => {
               </div>
             </div>
 
+            {/* Navigation Buttons */}
             {media.length > 1 && (
               <>
                 <button onClick={prevMedia} className="absolute left-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white z-10 bg-black/30 hover:bg-black/50 rounded-full p-3">
@@ -566,9 +564,7 @@ const EventGallery = () => {
                     <img
                       src={getOptimizedImageUrl(media[currentIndex]?.url, 1920)}
                       alt={media[currentIndex]?.title || "Photo"}
-                      className="max-w-full max-h-full object-contain transition-opacity duration-300"
-                      onLoad={handleImageLoad}
-                      style={{ opacity: imageAspectRatio ? 1 : 0 }}
+                      className="max-w-full max-h-full object-contain"
                     />
                     {canDownload && (
                       <a href={media[currentIndex]?.url} download
@@ -580,6 +576,7 @@ const EventGallery = () => {
                   </div>
                 )}
 
+                {/* Info Panel */}
                 <AnimatePresence>
                   {showInfo && (
                     <motion.div
@@ -602,7 +599,7 @@ const EventGallery = () => {
               </div>
             </div>
 
-            {/* Thumbnail Strip - with variable width and object-contain */}
+            {/* Thumbnail Strip */}
             {media.length > 1 && (
               <div className="absolute bottom-6 left-0 right-0 flex justify-center">
                 <div 
@@ -632,6 +629,7 @@ const EventGallery = () => {
               </div>
             )}
 
+            {/* Keyboard Shortcuts Hint */}
             <div className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs text-white/60">
               ← → navigate • ESC close • F fullscreen • I info
             </div>
@@ -640,14 +638,6 @@ const EventGallery = () => {
       </AnimatePresence>
     </div>
   );
-};
-
-// Helper function for duration formatting
-const formatDuration = (seconds) => {
-  if (!seconds) return "0:00";
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = Math.floor(seconds % 60);
-  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 };
 
 export default EventGallery;
