@@ -169,12 +169,13 @@ const Work = () => {
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  const getOptimizedImageUrl = (url, width = 800, height = 800) => {
+  // FIXED: Preserve original aspect ratio by removing c_fill
+  const getOptimizedImageUrl = (url, width = 800) => {
     if (!url) return "";
     if (url.includes("cloudinary")) {
       return url.replace(
         "/upload/",
-        `/upload/w_${width},h_${height},c_fill,q_auto,f_auto/`,
+        `/upload/w_${width},q_auto,f_auto/`,
       );
     }
     return url;
@@ -500,7 +501,7 @@ const Work = () => {
                 const videoId = media.type === "video" ? getYouTubeThumbnail(media.url) : null;
                 const thumbnail = media.type === "video" 
                   ? videoId 
-                  : getOptimizedImageUrl(media.url, 600, 800);
+                  : getOptimizedImageUrl(media.url, 600);
 
                 return (
                   <motion.div
@@ -697,8 +698,7 @@ const Work = () => {
                         src={currentEventMedia[currentMediaIndex]?.url}
                         poster={getOptimizedImageUrl(
                           currentEventMedia[currentMediaIndex]?.thumbnail?.url,
-                          1920,
-                          1080
+                          1920
                         )}
                         className="max-w-full max-h-full object-contain"
                         onTimeUpdate={handleTimeUpdate}
@@ -776,8 +776,7 @@ const Work = () => {
                       <img
                         src={getOptimizedImageUrl(
                           currentEventMedia[currentMediaIndex]?.url,
-                          1920,
-                          1080
+                          1920
                         )}
                         alt={currentEventMedia[currentMediaIndex]?.title || "Media"}
                         className="max-w-full max-h-full object-contain"
@@ -881,7 +880,7 @@ const Work = () => {
                 </div>
               </div>
 
-              {/* Thumbnail Strip */}
+              {/* Thumbnail Strip - with variable width and object-contain */}
               {currentEventMedia.length > 1 && (
                 <div className="absolute bottom-6 left-0 right-0 flex justify-center">
                   <div
@@ -912,7 +911,7 @@ const Work = () => {
                             <img
                               src={media.thumbnail?.url || getYouTubeThumbnail(media.url) || media.url}
                               alt=""
-                              className="h-full w-auto object-contain"
+                              className="h-full w-auto max-w-none object-contain"
                             />
                             <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                               <FontAwesomeIcon icon={faPlay} className="w-4 h-4 text-white" />
@@ -920,9 +919,9 @@ const Work = () => {
                           </>
                         ) : (
                           <img
-                            src={media.thumbnail?.url || getOptimizedImageUrl(media.url, 150, 150)}
+                            src={media.thumbnail?.url || getOptimizedImageUrl(media.url, 200)}
                             alt=""
-                            className="h-full w-auto object-contain"
+                            className="h-full w-auto max-w-none object-contain"
                           />
                         )}
                       </button>
