@@ -44,7 +44,7 @@ const Work = () => {
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
   
-  // New features state
+  // Lightbox state
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
@@ -98,16 +98,12 @@ const Work = () => {
     }
   };
 
-  /* -------------------------------------------------
-     PRODUCTION SAFE EMBED URL HANDLER
-  -------------------------------------------------- */
   const getEmbedUrl = (media) => {
     if (!media?.url) return "";
 
     const url = media.url.trim();
 
     try {
-      // -------- YOUTUBE --------
       if (url.includes("youtube.com") || url.includes("youtu.be")) {
         let videoId = "";
 
@@ -129,7 +125,6 @@ const Work = () => {
         return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&enablejsapi=1`;
       }
 
-      // -------- VIMEO --------
       if (url.includes("vimeo.com")) {
         const videoId = url.split("vimeo.com/")[1]?.split("?")[0];
         if (!videoId) return "";
@@ -142,7 +137,6 @@ const Work = () => {
     }
   };
 
-  // Get platform icon
   const getPlatformIcon = (url) => {
     if (url?.includes("youtube") || url?.includes("youtu.be")) {
       return faYoutubeBrand;
@@ -153,7 +147,6 @@ const Work = () => {
     return faLink;
   };
 
-  // Format date
   const formatDate = (dateString) => {
     if (!dateString) return "";
     try {
@@ -169,15 +162,13 @@ const Work = () => {
     }
   };
 
-  // Format duration
   const formatDuration = (seconds) => {
-    if (!seconds) return "";
+    if (!seconds) return "0:00";
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  // Format Cloudinary URL with optimization
   const getOptimizedImageUrl = (url, width = 800, height = 800) => {
     if (!url) return "";
     if (url.includes("cloudinary")) {
@@ -189,10 +180,6 @@ const Work = () => {
     return url;
   };
 
-  // Get image aspect ratio
-  const [imageAspectRatio, setImageAspectRatio] = useState(null);
-
-  // Get YouTube thumbnail
   const getYouTubeThumbnail = (url) => {
     const regExp = /(?:youtube\.com\/(?:.*v=|embed\/)|youtu\.be\/)([^"&?\/\s]{11})/;
     const match = url?.match(regExp);
@@ -215,7 +202,6 @@ const Work = () => {
     setLightboxOpen(true);
     setIsPlaying(false);
     setProgress(0);
-    setImageAspectRatio(null);
     document.body.style.overflow = "hidden";
   };
 
@@ -232,7 +218,6 @@ const Work = () => {
       prev === currentEventMedia.length - 1 ? 0 : prev + 1,
     );
     setShowInfo(false);
-    setImageAspectRatio(null);
   };
 
   const prevMedia = () => {
@@ -240,24 +225,13 @@ const Work = () => {
       prev === 0 ? currentEventMedia.length - 1 : prev - 1,
     );
     setShowInfo(false);
-    setImageAspectRatio(null);
   };
 
-  // Handle thumbnail click without any animation
   const handleThumbnailClick = (idx) => {
     setCurrentMediaIndex(idx);
     setShowInfo(false);
-    setImageAspectRatio(null);
   };
 
-  // Load image to get natural aspect ratio
-  const handleImageLoad = (e) => {
-    const img = e.target;
-    const ratio = img.naturalWidth / img.naturalHeight;
-    setImageAspectRatio(ratio);
-  };
-
-  // Toggle fullscreen
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       lightboxRef.current?.requestFullscreen();
@@ -268,7 +242,6 @@ const Work = () => {
     }
   };
 
-  // Handle video progress
   const handleTimeUpdate = () => {
     if (videoRef.current) {
       const progress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
@@ -276,7 +249,6 @@ const Work = () => {
     }
   };
 
-  // Handle video play/pause
   const togglePlay = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -288,7 +260,6 @@ const Work = () => {
     }
   };
 
-  // Handle volume change
   const handleVolumeChange = (e) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
@@ -298,7 +269,6 @@ const Work = () => {
     setIsMuted(newVolume === 0);
   };
 
-  // Toggle mute
   const toggleMute = () => {
     if (videoRef.current) {
       videoRef.current.muted = !isMuted;
@@ -306,7 +276,6 @@ const Work = () => {
     }
   };
 
-  // Handle seek
   const handleSeek = (e) => {
     const newTime = (parseFloat(e.target.value) / 100) * videoRef.current.duration;
     if (videoRef.current) {
@@ -315,7 +284,6 @@ const Work = () => {
     setProgress(parseFloat(e.target.value));
   };
 
-  // Share media
   const shareMedia = async () => {
     const media = currentEventMedia[currentMediaIndex];
     if (navigator.share) {
@@ -329,14 +297,12 @@ const Work = () => {
         console.log("Share cancelled");
       }
     } else {
-      // Fallback - copy to clipboard
       navigator.clipboard.writeText(media.url);
       alert("Link copied to clipboard!");
     }
     setShowShareMenu(false);
   };
 
-  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!lightboxOpen) return;
@@ -374,7 +340,6 @@ const Work = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [lightboxOpen, currentMediaIndex, isPlaying, showInfo]);
 
-  // Auto-scroll thumbnail strip
   useEffect(() => {
     if (thumbnailStripRef.current && currentMediaIndex >= 0) {
       const thumbElement = thumbnailStripRef.current.children[currentMediaIndex];
@@ -546,7 +511,6 @@ const Work = () => {
                     onClick={() => openLightbox(event, index)}
                     className="group relative aspect-[4/5] rounded-2xl overflow-hidden cursor-pointer bg-gray-900 shadow-lg hover:shadow-2xl transition-all duration-500"
                   >
-                    {/* Media Thumbnail */}
                     <img
                       src={thumbnail}
                       alt={media.title || ""}
@@ -554,10 +518,8 @@ const Work = () => {
                       loading="lazy"
                     />
 
-                    {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition duration-500" />
 
-                    {/* Media Type Badge */}
                     <div className="absolute top-4 left-4 bg-black/80 text-white px-3 py-1.5 text-xs rounded-full flex items-center space-x-1">
                       <FontAwesomeIcon 
                         icon={media.type === "video" ? faVideo : faCamera} 
@@ -566,7 +528,6 @@ const Work = () => {
                       <span>{media.type === "video" ? "Video" : "Photo"}</span>
                     </div>
 
-                    {/* Platform Badge */}
                     {media.type === "video" && media.url && (
                       <div className="absolute top-4 right-4 bg-black/80 text-white px-3 py-1.5 text-xs rounded-full flex items-center space-x-1">
                         <FontAwesomeIcon 
@@ -580,7 +541,6 @@ const Work = () => {
                       </div>
                     )}
 
-                    {/* Play Button for Videos */}
                     {media.type === "video" && (
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500">
                         <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-xl transform group-hover:scale-110 transition duration-300">
@@ -592,7 +552,6 @@ const Work = () => {
                       </div>
                     )}
 
-                    {/* Title Overlay */}
                     {media.title && (
                       <div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-full group-hover:translate-y-0 transition duration-500">
                         <h3 className="text-white text-lg font-light">{media.title}</h3>
@@ -636,7 +595,6 @@ const Work = () => {
                   )}
                 </div>
                 <div className="flex items-center space-x-4">
-                  {/* Share Button */}
                   <div className="relative">
                     <button
                       onClick={() => setShowShareMenu(!showShareMenu)}
@@ -672,7 +630,6 @@ const Work = () => {
                     )}
                   </div>
 
-                  {/* Info Button */}
                   <button
                     onClick={() => setShowInfo(!showInfo)}
                     className={`text-white/70 hover:text-white transition-colors ${
@@ -682,7 +639,6 @@ const Work = () => {
                     <FontAwesomeIcon icon={faInfoCircle} className="w-5 h-5" />
                   </button>
 
-                  {/* Fullscreen Button */}
                   <button
                     onClick={toggleFullscreen}
                     className="text-white/70 hover:text-white transition-colors"
@@ -693,7 +649,6 @@ const Work = () => {
                     />
                   </button>
 
-                  {/* Close Button */}
                   <button
                     onClick={closeLightbox}
                     className="text-white/70 hover:text-white transition-colors"
@@ -725,7 +680,6 @@ const Work = () => {
               <div className="relative w-full h-full flex items-center justify-center p-20">
                 <div className="relative max-w-7xl max-h-[85vh] w-full h-full flex items-center justify-center">
                   {getEmbedUrl(currentEventMedia[currentMediaIndex]) ? (
-                    // External Video (YouTube/Vimeo)
                     <div className="relative w-full" style={{ height: '0', paddingBottom: '56.25%' }}>
                       <iframe
                         src={getEmbedUrl(currentEventMedia[currentMediaIndex])}
@@ -737,7 +691,6 @@ const Work = () => {
                       />
                     </div>
                   ) : currentEventMedia[currentMediaIndex]?.type === "video" ? (
-                    // Direct Video File
                     <div className="relative w-full h-full flex items-center justify-center">
                       <video
                         ref={videoRef}
@@ -754,9 +707,7 @@ const Work = () => {
                         onClick={togglePlay}
                       />
                       
-                      {/* Custom Video Controls */}
                       <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                        {/* Progress Bar */}
                         <input
                           type="range"
                           min="0"
@@ -768,7 +719,6 @@ const Work = () => {
                         
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4">
-                            {/* Play/Pause */}
                             <button
                               onClick={togglePlay}
                               className="text-white hover:text-white/80 transition-colors"
@@ -779,7 +729,6 @@ const Work = () => {
                               />
                             </button>
                             
-                            {/* Volume */}
                             <div className="flex items-center space-x-2">
                               <button
                                 onClick={toggleMute}
@@ -801,7 +750,6 @@ const Work = () => {
                               />
                             </div>
                             
-                            {/* Time */}
                             <span className="text-white/80 text-sm">
                               {videoRef.current && (
                                 <>
@@ -812,7 +760,6 @@ const Work = () => {
                             </span>
                           </div>
                           
-                          {/* Download Button */}
                           <a
                             href={currentEventMedia[currentMediaIndex]?.url}
                             download
@@ -825,7 +772,6 @@ const Work = () => {
                       </div>
                     </div>
                   ) : (
-                    // Image - with object-contain to preserve aspect ratio
                     <div className="relative w-full h-full flex items-center justify-center">
                       <img
                         src={getOptimizedImageUrl(
@@ -834,12 +780,9 @@ const Work = () => {
                           1080
                         )}
                         alt={currentEventMedia[currentMediaIndex]?.title || "Media"}
-                        className="max-w-full max-h-full object-contain transition-opacity duration-300"
-                        onLoad={handleImageLoad}
-                        style={{ opacity: imageAspectRatio ? 1 : 0 }}
+                        className="max-w-full max-h-full object-contain"
                       />
                       
-                      {/* Download Button */}
                       <a
                         href={currentEventMedia[currentMediaIndex]?.url}
                         download
@@ -938,7 +881,7 @@ const Work = () => {
                 </div>
               </div>
 
-              {/* Thumbnail Strip - with variable width and object-contain */}
+              {/* Thumbnail Strip */}
               {currentEventMedia.length > 1 && (
                 <div className="absolute bottom-6 left-0 right-0 flex justify-center">
                   <div
