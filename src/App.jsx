@@ -6,6 +6,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Services from "./pages/Services";
 import EventGallery from "./pages/EventGallery";
+import Tutorials from "./pages/Tutorials";
+import TutorialDetail from "./pages/TutorialDetail";
 import AdminApp from "./admin/AdminApp";
 import NotFound from "./pages/NotFound";
 
@@ -19,6 +21,8 @@ const router = createBrowserRouter([
       { path: "about", element: <About /> },
       { path: "services", element: <Services /> },
       { path: "contact", element: <Contact /> },
+      { path: "tutorials", element: <Tutorials /> },
+      { path: "tutorials/:tutorialId", element: <TutorialDetail /> },
       { path: "event/:eventId", element: <EventGallery /> },
       { path: "admin/*", element: <AdminApp /> },
       { path: "/*", element: <NotFound /> },

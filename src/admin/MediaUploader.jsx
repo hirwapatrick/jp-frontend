@@ -22,6 +22,7 @@ import {
   faVimeo as faVimeoBrand,
 } from "@fortawesome/free-brands-svg-icons";
 
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const MediaUploader = ({ user }) => {
@@ -503,9 +504,17 @@ const MediaUploader = ({ user }) => {
                 <p className="text-gray-400 text-sm mb-4">
                   or click to select files
                 </p>
+
                 <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-500">
-                  <span>JPG, PNG, GIF, WEBP (Max 10MB each)</span>
-                  <span>MP4, MOV, AVI, WEBM (Max 100MB each)</span>
+                  <span className="flex items-center gap-2">
+                    <FontAwesomeIcon icon={faImage} />
+                    JPG, PNG, GIF, WEBP (Max 10MB each)
+                  </span>
+
+                  <span className="flex items-center gap-2">
+                    <FontAwesomeIcon icon={faVideo} />
+                    MP4, MOV, AVI, WEBM (Max 100MB each)
+                  </span>
                 </div>
               </div>
             </div>

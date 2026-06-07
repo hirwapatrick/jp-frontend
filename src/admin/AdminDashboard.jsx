@@ -41,6 +41,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import AccountSettings from "./AccountSettings";
+import TutorialList from "./TutorialList";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -62,7 +63,10 @@ const AdminDashboard = ({ user, onLogout }) => {
   const [videoTitle, setVideoTitle] = useState("");
   const [replyMessage, setReplyMessage] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState(() => {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("tab") || "overview";
+});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -438,6 +442,23 @@ const AdminDashboard = ({ user, onLogout }) => {
               )}
             </button>
             <button
+              onClick={() => setActiveTab("tutorials")}
+              className={`pb-2 px-1 text-sm font-medium transition-colors relative flex items-center space-x-2 whitespace-nowrap ${
+                activeTab === "tutorials"
+                  ? "text-white"
+                  : "text-gray-400 hover:text-gray-300"
+              }`}
+            >
+              <FontAwesomeIcon icon={faYoutubeBrand} className="w-3.5 h-3.5" />
+              <span>Tutorials</span>
+              {activeTab === "tutorials" && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-white"
+                />
+              )}
+            </button>
+            <button
               onClick={() => setActiveTab("account")}
               className={`pb-2 px-1 text-sm font-medium transition-colors relative flex items-center space-x-2 whitespace-nowrap ${
                 activeTab === "account"
@@ -459,7 +480,9 @@ const AdminDashboard = ({ user, onLogout }) => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {activeTab === "account" ? (
+        {activeTab === "tutorials" ? (
+          <TutorialList user={user} />
+        ) : activeTab === "account" ? (
           <AccountSettings user={user} onLogout={onLogout} />
         ) : activeTab === "overview" ? (
           <>
@@ -493,6 +516,17 @@ const AdminDashboard = ({ user, onLogout }) => {
                     { icon: faVideo, count: stats.media.videos, label: "Videos" },
                   ]}
                 />
+                {stats.tutorials && (
+                  <StatCard
+                    icon={faYoutubeBrand}
+                    label="Tutorials"
+                    value={stats.tutorials.total}
+                    color="red"
+                    subStats={[
+                      { icon: faCheckCircle, count: stats.tutorials.published, label: "Published" },
+                    ]}
+                  />
+                )}
               </div>
             )}
 

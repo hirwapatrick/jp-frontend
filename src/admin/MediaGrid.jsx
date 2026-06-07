@@ -56,7 +56,7 @@ const MediaGrid = ({ user }) => {
       const mediaRes = await fetch(`${API_URL}/api/media/event/${eventId}`);
       if (!mediaRes.ok) throw new Error('Failed to fetch media');
       const mediaData = await mediaRes.json();
-      setMedia(mediaData);
+      setMedia(mediaData?.media || []);
     } catch (err) {
       setError(err.message);
     } finally {

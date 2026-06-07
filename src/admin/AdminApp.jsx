@@ -5,6 +5,8 @@ import AdminDashboard from './AdminDashboard';
 import EventForm from './EventForm';
 import MediaGrid from './MediaGrid';
 import MediaUploader from './MediaUploader';
+import TutorialList from './TutorialList';
+import TutorialForm from './TutorialForm';
 
 const AdminApp = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -100,6 +102,31 @@ const AdminApp = () => {
         path="events/:eventId/upload" 
         element={isAuthenticated ? 
           <MediaUploader user={user} /> : 
+          <Navigate to="/admin/login" replace />
+        } 
+      />
+      
+      {/* Tutorial Management */}
+      <Route 
+        path="tutorials" 
+        element={isAuthenticated ? 
+          <TutorialList user={user} /> : 
+          <Navigate to="/admin/login" replace />
+        } 
+      />
+      
+      <Route 
+        path="tutorials/new" 
+        element={isAuthenticated ? 
+          <TutorialForm user={user} /> : 
+          <Navigate to="/admin/login" replace />
+        } 
+      />
+      
+      <Route 
+        path="tutorials/:tutorialId/edit" 
+        element={isAuthenticated ? 
+          <TutorialForm user={user} /> : 
           <Navigate to="/admin/login" replace />
         } 
       />
