@@ -390,7 +390,7 @@ const Work = () => {
 
   return (
     <div className="pt-20 pb-20 bg-black min-h-screen text-white">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

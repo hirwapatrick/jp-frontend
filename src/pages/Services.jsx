@@ -170,7 +170,7 @@ const Services = () => {
 
   return (
     <div className="pt-20 pb-20 bg-white dark:bg-black">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-20">
+      <div className="max-w-7xl mx-auto py-20">
         <h1 className="text-4xl font-light text-center mb-16 text-gray-900 dark:text-white">
           Our Services
         </h1>

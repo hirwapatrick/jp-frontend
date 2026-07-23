@@ -19,7 +19,7 @@ const RootLayout = () => {
       <AnimatePresence mode="wait">
         <motion.main
           key={location.pathname}
-          className="!bg-black bg-black flex-1"
+          className="!bg-black bg-black flex-1 px-4 sm:px-6 lg:px-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}

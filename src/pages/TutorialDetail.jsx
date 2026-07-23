@@ -36,7 +36,7 @@ const TutorialDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto py-6">
         <div className="animate-pulse">
           <div className="h-4 w-32 bg-gray-800 rounded mb-6" />
           <div className="grid lg:grid-cols-[2fr_1fr] gap-6">
@@ -84,7 +84,7 @@ const TutorialDetail = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="max-w-7xl mx-auto px-4 py-6"
+      className="max-w-7xl mx-auto py-6"
     >
       <Link
         to="/tutorials"

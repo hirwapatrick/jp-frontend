@@ -4,7 +4,7 @@ import { faCompass, faHome } from '@fortawesome/free-solid-svg-icons';
 
 const NotFound = () => {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
       <div className="max-w-md w-full text-center">
         {/* Simple 404 */}
         <div className="mb-8">

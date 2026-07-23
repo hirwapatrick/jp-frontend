@@ -77,7 +77,7 @@ const About = () => {
 
   return (
     <div className="pt-20 pb-20 bg-white dark:bg-black">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
           {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
