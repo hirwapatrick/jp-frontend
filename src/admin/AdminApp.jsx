@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Login from './Login';
 import AdminDashboard from './AdminDashboard';
 import EventForm from './EventForm';
@@ -11,6 +11,7 @@ import TutorialForm from './TutorialForm';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const AdminApp = () => {
+  const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +22,7 @@ const AdminApp = () => {
       const auth = sessionStorage.getItem('admin_authenticated') === 'true'
         || localStorage.getItem('admin_authenticated') === 'true';
 
-      if (!session || auth !== 'true') {
+      if (!session || !auth) {
         setIsLoading(false);
         return;
       }
@@ -70,6 +71,7 @@ const AdminApp = () => {
   const handleLogin = (userData) => {
     setUser(userData);
     setIsAuthenticated(true);
+    navigate('/admin/dashboard', { replace: true });
   };
 
   const handleLogout = () => {

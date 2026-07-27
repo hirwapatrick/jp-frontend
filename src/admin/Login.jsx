@@ -59,11 +59,11 @@ const Login = ({ onLogin }) => {
 
       localStorage.setItem("admin_session", JSON.stringify(data));
 
+      setIsLoading(false);
       onLogin(data);
     } catch (err) {
-      setError(err.message);
-    } finally {
       setIsLoading(false);
+      setError(err.message);
     }
   };
 
