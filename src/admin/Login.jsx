@@ -49,12 +49,15 @@ const Login = ({ onLogin }) => {
 
       if (rememberMe) {
         localStorage.setItem("admin_email", email);
+        localStorage.setItem("admin_authenticated", "true");
+        sessionStorage.removeItem("admin_authenticated");
       } else {
         localStorage.removeItem("admin_email");
+        localStorage.removeItem("admin_authenticated");
+        sessionStorage.setItem("admin_authenticated", "true");
       }
 
       localStorage.setItem("admin_session", JSON.stringify(data));
-      sessionStorage.setItem("admin_authenticated", "true");
 
       onLogin(data);
     } catch (err) {

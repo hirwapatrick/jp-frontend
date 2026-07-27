@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Film, ListVideo } from "lucide-react";
+import { ArrowLeft, Film } from "lucide-react";
 import VideoPlayer from "../components/tutorials/VideoPlayer";
 import VideoInfo from "../components/tutorials/VideoInfo";
 import ChannelInfo from "../components/tutorials/ChannelInfo";
@@ -36,7 +36,7 @@ const TutorialDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto py-6">
+      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-black min-h-screen text-white">
         <div className="animate-pulse">
           <div className="h-4 w-32 bg-gray-800 rounded mb-6" />
           <div className="grid lg:grid-cols-[2fr_1fr] gap-6">
@@ -66,7 +66,7 @@ const TutorialDetail = () => {
 
   if (!tutorial) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center text-white">
         <Film className="w-16 h-16 text-gray-700 mx-auto mb-4" />
         <p className="text-gray-500">Tutorial not found.</p>
         <Link
@@ -84,7 +84,7 @@ const TutorialDetail = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="max-w-7xl mx-auto py-6"
+      className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-white"
     >
       <Link
         to="/tutorials"
@@ -124,17 +124,6 @@ const TutorialDetail = () => {
         </div>
 
         <aside className="lg:sticky lg:top-6 lg:self-start">
-          <div className="flex items-center gap-2 mb-4">
-            <ListVideo className="w-4 h-4 text-white" />
-            <h2 className="text-base font-semibold text-white">
-              Related Videos
-              {related.length > 0 && (
-                <span className="text-gray-500 font-normal ml-1">
-                  ({related.length})
-                </span>
-              )}
-            </h2>
-          </div>
           <RelatedVideos videos={related} />
         </aside>
       </div>

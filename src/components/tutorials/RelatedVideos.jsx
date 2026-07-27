@@ -59,7 +59,14 @@ const RelatedVideos = ({ videos }) => {
     <div>
       <div className="flex items-center gap-2 mb-4">
         <Clock className="w-4 h-4 text-white" />
-        <h2 className="text-base font-semibold text-white">Related Videos</h2>
+        <h2 className="text-base font-semibold text-white">
+          Related Videos
+          {videos.length > 0 && (
+            <span className="text-gray-500 font-normal ml-1">
+              ({videos.length})
+            </span>
+          )}
+        </h2>
       </div>
 
       <div className="space-y-3">

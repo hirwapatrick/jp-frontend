@@ -8,28 +8,63 @@ import MediaUploader from './MediaUploader';
 import TutorialList from './TutorialList';
 import TutorialForm from './TutorialForm';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const AdminApp = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
-    const session = localStorage.getItem('admin_session');
-    const auth = sessionStorage.getItem('admin_authenticated');
-    
-    if (session && auth === 'true') {
+    const validateSession = async () => {
+      const session = localStorage.getItem('admin_session');
+      const auth = sessionStorage.getItem('admin_authenticated') === 'true'
+        || localStorage.getItem('admin_authenticated') === 'true';
+
+      if (!session || auth !== 'true') {
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const userData = JSON.parse(session);
-        setUser(userData);
-        setIsAuthenticated(true);
+        if (!userData.token) {
+          localStorage.removeItem('admin_session');
+          localStorage.removeItem('admin_authenticated');
+          sessionStorage.removeItem('admin_authenticated');
+          setIsLoading(false);
+          return;
+        }
+
+        const res = await fetch(`${API_URL}/api/auth/profile`, {
+          headers: { Authorization: `Bearer ${userData.token}` },
+        });
+
+        if (res.ok) {
+          setUser(userData);
+          setIsAuthenticated(true);
+        } else {
+          localStorage.removeItem('admin_session');
+          localStorage.removeItem('admin_authenticated');
+          sessionStorage.removeItem('admin_authenticated');
+        }
       } catch (error) {
-        console.error('Failed to parse session:', error);
-        localStorage.removeItem('admin_session');
-        sessionStorage.removeItem('admin_authenticated');
+        console.error('Session validation failed:', error);
+        // Keep session on network error to avoid locking user out
+        try {
+          const userData = JSON.parse(session);
+          setUser(userData);
+          setIsAuthenticated(true);
+        } catch {
+          localStorage.removeItem('admin_session');
+          localStorage.removeItem('admin_authenticated');
+          sessionStorage.removeItem('admin_authenticated');
+        }
       }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    };
+
+    validateSession();
   }, []);
 
   const handleLogin = (userData) => {
@@ -39,8 +74,9 @@ const AdminApp = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('admin_session');
-    sessionStorage.removeItem('admin_authenticated');
+    localStorage.removeItem('admin_authenticated');
     localStorage.removeItem('admin_email');
+    sessionStorage.removeItem('admin_authenticated');
     setUser(null);
     setIsAuthenticated(false);
   };

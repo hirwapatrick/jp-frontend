@@ -179,7 +179,7 @@ const Home = () => {
       {/* Social Links */}
       <div className="absolute left-6 top-1/2 -translate-y-1/2 hidden xl:flex flex-col items-center gap-6 z-20">
         <a
-          href="https://instagram.com"
+          href="https://instagram.com/jacques_photographer"
           target="_blank"
           rel="noopener noreferrer"
           className="text-white/40 hover:text-white transition-all duration-300 hover:scale-110"
@@ -188,7 +188,7 @@ const Home = () => {
         </a>
 
         <a
-          href="https://x.com"
+          href="https://x.com/jacques_photographer"
           target="_blank"
           rel="noopener noreferrer"
           className="text-white/40 hover:text-white transition-all duration-300 hover:scale-110"
@@ -197,7 +197,7 @@ const Home = () => {
         </a>
 
         <a
-          href="https://facebook.com"
+          href="https://facebook.com/KeddyJacques"
           target="_blank"
           rel="noopener noreferrer"
           className="text-white/40 hover:text-white transition-all duration-300 hover:scale-110"

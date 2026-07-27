@@ -106,8 +106,6 @@ const Contact = () => {
     };
 
     try {
-      console.log("Submitting form data:", formData);
-
       const response = await fetch(`${API_URL}/api/contact`, {
         method: "POST",
         headers: {
@@ -131,9 +129,6 @@ const Contact = () => {
         );
       }
 
-      // Success!
-      console.log("Form submitted successfully:", data);
-
       setIsSubmitted(true);
 
       // Reset form
@@ -150,9 +145,6 @@ const Contact = () => {
       // Reset success message after 5 seconds
       setTimeout(() => setIsSubmitted(false), 5000);
     } catch (err) {
-      console.error("Contact form error:", err);
-
-      // Set user-friendly error message
       if (err.message.includes("Failed to fetch")) {
         setError(
           "Unable to connect to server. Please check your internet connection.",
@@ -169,12 +161,13 @@ const Contact = () => {
   };
 
   const eventTypes = [
-    "Wedding",
-    "Portrait",
-    "Commercial",
-    "Event",
-    "Fine Art",
-    "Other",
+    { value: "wedding", label: "Wedding" },
+    { value: "portrait", label: "Portrait" },
+    { value: "commercial", label: "Commercial" },
+    { value: "event", label: "Event" },
+    { value: "fashion", label: "Fashion" },
+    { value: "product", label: "Product" },
+    { value: "other", label: "Other" },
   ];
 
   return (
@@ -440,8 +433,8 @@ const Contact = () => {
                   >
                     <option value="">Select a project type</option>
                     {eventTypes.map((type) => (
-                      <option key={type} value={type.toLowerCase()}>
-                        {type}
+                      <option key={type.value} value={type.value}>
+                        {type.label}
                       </option>
                     ))}
                   </select>
@@ -490,7 +483,7 @@ const Contact = () => {
                     value={formData.eventDate}
                     onChange={handleChange}
                     className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-white outline-none transition-colors text-gray-900 dark:text-white rounded-lg"
-                    placeholder="MM/YYYY or TBD"
+                    placeholder=""
                     disabled={isSubmitting}
                   />
                 </div>

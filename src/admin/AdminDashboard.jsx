@@ -119,8 +119,8 @@ const AdminDashboard = ({ user, onLogout }) => {
         const contactsData = await contactsRes.json();
         setContacts(contactsData.data || []);
       }
-    } catch (err) {
-      console.error("Failed to fetch contacts:", err);
+    } catch {
+      // Failed to fetch contacts
     } finally {
       setContactsLoading(false);
     }
@@ -290,14 +290,20 @@ const AdminDashboard = ({ user, onLogout }) => {
   };
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    if (!dateString) return "N/A";
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString;
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return dateString;
+    }
   };
 
   const getStatusBadge = (status) => {
@@ -612,6 +618,7 @@ const AdminDashboard = ({ user, onLogout }) => {
                       event={event}
                       user={user}
                       onAddMedia={handleAddMedia}
+                      onUpdate={fetchDashboardData}
                     />
                   ))}
                 </div>
@@ -846,7 +853,7 @@ const AdminDashboard = ({ user, onLogout }) => {
 
       <AnimatePresence>
         {showMediaModal && selectedEvent && (
-          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div key="media-modal" className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -966,7 +973,7 @@ const AdminDashboard = ({ user, onLogout }) => {
 
       <AnimatePresence>
         {showContactModal && selectedContact && (
-          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div key="contact-modal" className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -1141,7 +1148,7 @@ const StatCard = ({ icon, label, value, color, subStats }) => {
   );
 };
 
-const EventCard = ({ event, user, onAddMedia }) => {
+const EventCard = ({ event, user, onAddMedia, onUpdate }) => {
   const navigate = useNavigate();
 
   const toggleFeatured = async () => {
@@ -1150,9 +1157,9 @@ const EventCard = ({ event, user, onAddMedia }) => {
         method: "PATCH",
         headers: { Authorization: `Bearer ${user.token}` },
       });
-      window.location.reload();
-    } catch (error) {
-      console.error("Failed to toggle featured:", error);
+      if (onUpdate) onUpdate();
+    } catch {
+      // Failed to toggle featured
     }
   };
 

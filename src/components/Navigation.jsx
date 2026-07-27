@@ -77,7 +77,7 @@ const Navigation = () => {
             </nav>
 
             {/* Social Icons - Desktop */}
-            <div className="hidden md:block">
+            <div className="hidden md:flex items-center space-x-4">
               <SocialLinks />
             </div>
 

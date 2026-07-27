@@ -7,14 +7,12 @@ import {
   faChevronLeft,
   faChevronRight,
   faPlay,
-  faCamera,
+  faPause,
   faCalendar,
   faLocationDot,
-  faUsers,
+  faCamera,
   faImage,
   faVideo,
-  faClock,
-  faCircleNotch,
   faDownload,
   faSpinner,
   faExclamationTriangle,
@@ -278,10 +276,9 @@ const Work = () => {
   };
 
   const handleSeek = (e) => {
+    if (!videoRef.current) return;
     const newTime = (parseFloat(e.target.value) / 100) * videoRef.current.duration;
-    if (videoRef.current) {
-      videoRef.current.currentTime = newTime;
-    }
+    videoRef.current.currentTime = newTime;
     setProgress(parseFloat(e.target.value));
   };
 
@@ -294,8 +291,8 @@ const Work = () => {
           text: media.description || "Great photo/video from our collection",
           url: media.url,
         });
-      } catch (err) {
-        console.log("Share cancelled");
+      } catch {
+        // Share cancelled or not supported
       }
     } else {
       navigator.clipboard.writeText(media.url);
@@ -500,7 +497,7 @@ const Work = () => {
               {event.media.map((media, index) => {
                 const videoId = media.type === "video" ? getYouTubeThumbnail(media.url) : null;
                 const thumbnail = media.type === "video" 
-                  ? videoId 
+                  ? (media.thumbnail?.url || videoId || "")
                   : getOptimizedImageUrl(media.url, 600);
 
                 return (
@@ -724,7 +721,7 @@ const Work = () => {
                               className="text-white hover:text-white/80 transition-colors"
                             >
                               <FontAwesomeIcon 
-                                icon={isPlaying ? faPlay : faPlay} 
+                                icon={isPlaying ? faPause : faPlay} 
                                 className="w-4 h-4" 
                               />
                             </button>

@@ -7,6 +7,7 @@ import {
   faChevronLeft,
   faChevronRight,
   faPlay,
+  faPause,
   faCamera,
   faCalendar,
   faLocationDot,
@@ -52,15 +53,21 @@ const EventGallery = () => {
   const lightboxRef = useRef(null);
   const thumbnailStripRef = useRef(null);
 
-  const isUnlocked = event && (
-    !event.settings?.password ||
-    sessionStorage.getItem(`gallery_unlocked_${eventId}`) === "true"
-  );
+  const [isUnlocked, setIsUnlocked] = useState(false);
 
-  const canDownload = event && (
-    event.settings?.allowDownloads ||
-    sessionStorage.getItem(`gallery_unlocked_${eventId}`) === "true"
-  );
+  const canDownload = isUnlocked || event?.settings?.allowDownloads;
+
+  useEffect(() => {
+    if (!event) return;
+    if (!event.settings?.password) {
+      setIsUnlocked(true);
+      return;
+    }
+    const stored = sessionStorage.getItem(`gallery_token_${eventId}`);
+    if (stored) {
+      setIsUnlocked(true);
+    }
+  }, [event, eventId]);
 
   useEffect(() => {
     fetchEvent();
@@ -69,7 +76,12 @@ const EventGallery = () => {
   const fetchEvent = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_URL}/api/events/${eventId}`);
+      const headers = {};
+      const storedToken = sessionStorage.getItem(`gallery_token_${eventId}`);
+      if (storedToken && storedToken !== "true") {
+        headers["Authorization"] = `Bearer ${storedToken}`;
+      }
+      const res = await fetch(`${API_URL}/api/events/${eventId}`, { headers });
       if (!res.ok) throw new Error("Event not found");
       const data = await res.json();
       setEvent(data);
@@ -92,7 +104,12 @@ const EventGallery = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Incorrect password");
-      sessionStorage.setItem(`gallery_unlocked_${eventId}`, "true");
+      if (data.token) {
+        sessionStorage.setItem(`gallery_token_${eventId}`, data.token);
+      } else {
+        sessionStorage.setItem(`gallery_token_${eventId}`, "true");
+      }
+      setIsUnlocked(true);
       setPassword("");
     } catch (err) {
       setPasswordError(err.message);
@@ -141,6 +158,13 @@ const EventGallery = () => {
   };
 
   // FIXED: Preserve original aspect ratio by removing c_fill
+  const getYouTubeThumbnail = (url) => {
+    if (!url) return null;
+    const regExp = /(?:youtube\.com\/(?:.*v=|embed\/)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(regExp);
+    return match ? `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg` : null;
+  };
+
   const getOptimizedImageUrl = (url, width = 800) => {
     if (!url) return "";
     if (url.includes("cloudinary")) {
@@ -246,10 +270,9 @@ const EventGallery = () => {
   };
 
   const handleSeek = (e) => {
+    if (!videoRef.current) return;
     const newTime = (parseFloat(e.target.value) / 100) * videoRef.current.duration;
-    if (videoRef.current) {
-      videoRef.current.currentTime = newTime;
-    }
+    videoRef.current.currentTime = newTime;
     setProgress(parseFloat(e.target.value));
   };
 
@@ -376,7 +399,7 @@ const EventGallery = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {media.map((item, index) => {
               const thumbnail = item.type === "video"
-                ? (item.thumbnail?.url || item.url)
+                ? (item.thumbnail?.url || getYouTubeThumbnail?.(item.url) || "")
                 : getOptimizedImageUrl(item.url, 600);
 
               return (
@@ -525,7 +548,7 @@ const EventGallery = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                           <button onClick={togglePlay} className="text-white hover:text-white/80">
-                            <FontAwesomeIcon icon={isPlaying ? faPlay : faPlay} className="w-4 h-4" />
+                            <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} className="w-4 h-4" />
                           </button>
                           <div className="flex items-center space-x-2">
                             <button onClick={() => { if (videoRef.current) { videoRef.current.muted = !isMuted; setIsMuted(!isMuted); } }} className="text-white hover:text-white/80">

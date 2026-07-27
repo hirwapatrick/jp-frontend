@@ -180,8 +180,6 @@ const MediaUploader = ({ user }) => {
         description: videoDescription,
       };
 
-      console.log("Sending video link data:", mediaData);
-
       const res = await fetch(`${API_URL}/api/media/video-link`, {
         method: "POST",
         headers: {
@@ -192,7 +190,6 @@ const MediaUploader = ({ user }) => {
       });
 
       const responseData = await res.json();
-      console.log("Video link response:", responseData);
 
       if (!res.ok) {
         throw new Error(responseData.message || "Failed to add video link");
@@ -208,7 +205,6 @@ const MediaUploader = ({ user }) => {
         navigate(`/admin/events/${eventId}/media`);
       }, 1500);
     } catch (err) {
-      console.error("Video link error:", err);
       setError(err.message);
     } finally {
       setUploading(false);
@@ -240,8 +236,6 @@ const MediaUploader = ({ user }) => {
           fileItem.file,
         );
 
-        console.log(`📤 Uploading ${fileItem.type} to ${endpoint}...`);
-
         const uploadRes = await fetch(`${API_URL}${endpoint}`, {
           method: "POST",
           headers: {
@@ -261,11 +255,8 @@ const MediaUploader = ({ user }) => {
         }
 
         const uploadData = await uploadRes.json();
-        console.log("✅ Upload successful:", uploadData);
 
-        // Validate upload data
         if (!uploadData.url || !uploadData.publicId) {
-          console.error("❌ Invalid upload response:", uploadData);
           throw new Error("Upload response missing required fields");
         }
 
@@ -285,8 +276,6 @@ const MediaUploader = ({ user }) => {
             uploadData.format || (fileItem.type === "image" ? "jpg" : "mp4"),
         };
 
-        console.log("📝 Creating media record:", mediaData);
-
         const mediaRes = await fetch(`${API_URL}/api/media`, {
           method: "POST",
           headers: {
@@ -297,17 +286,10 @@ const MediaUploader = ({ user }) => {
         });
 
         const mediaResponseData = await mediaRes.json().catch(() => ({}));
-        console.log("📥 Media record response:", {
-          status: mediaRes.status,
-          ok: mediaRes.ok,
-          data: mediaResponseData,
-        });
 
         if (!mediaRes.ok) {
           // If media creation fails, we should delete the uploaded file from Cloudinary
           // to avoid orphaned files
-          console.log("⚠️ Media creation failed, cleaning up Cloudinary...");
-
           // Try to delete the uploaded file from Cloudinary
           try {
             await fetch(`${API_URL}/api/media/delete-upload`, {
@@ -321,8 +303,8 @@ const MediaUploader = ({ user }) => {
                 type: fileItem.type,
               }),
             });
-          } catch (cleanupError) {
-            console.error("Failed to cleanup Cloudinary:", cleanupError);
+          } catch {
+            // Cleanup failed, continue
           }
 
           throw new Error(
@@ -347,8 +329,6 @@ const MediaUploader = ({ user }) => {
           setSuccessMessage("All files uploaded successfully!");
         }
       } catch (error) {
-        console.error("❌ Error uploading file:", fileItem.title, error);
-
         setFiles((prev) =>
           prev.map((f) =>
             f.id === fileItem.id
@@ -359,12 +339,9 @@ const MediaUploader = ({ user }) => {
 
         setUploadStats((prev) => ({ ...prev, failed: prev.failed + 1 }));
 
-        // Set a general error message but don't overwrite individual file errors
-        if (uploadStats.failed === 0) {
-          setError(
-            `Some files failed to upload. Check individual file status.`,
-          );
-        }
+        setError(
+          `Some files failed to upload. Check individual file status.`,
+        );
       }
     }
 

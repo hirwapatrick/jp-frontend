@@ -221,18 +221,11 @@ const EventForm = ({ user }) => {
       // Upload cover image if changed
       if (coverImage) {
         formDataToSend.append('coverImage', coverImage);
-        console.log('📸 Uploading image:', {
-          name: coverImage.name,
-          type: coverImage.type,
-          size: `${(coverImage.size / 1024).toFixed(2)}KB`
-        });
       }
 
       const url = isEditMode 
         ? `${API_URL}/api/events/${eventId}`
         : `${API_URL}/api/events`;
-
-      console.log('📡 Sending to:', url);
       
       const res = await fetch(url, {
         method: isEditMode ? 'PUT' : 'POST',
@@ -248,7 +241,6 @@ const EventForm = ({ user }) => {
       }
 
       const data = await res.json();
-      console.log('✅ Success:', data);
       
       setSuccessMessage(`Event ${isEditMode ? 'updated' : 'created'} successfully!`);
       
@@ -258,7 +250,6 @@ const EventForm = ({ user }) => {
       }, 1500);
       
     } catch (err) {
-      console.error('❌ Error:', err);
       setError(err.message);
       setIsLoading(false);
     }

@@ -12,14 +12,14 @@ const RootLayout = () => {
   const isAdmin = location.pathname.startsWith("/admin");
 
   return (
-    <div className="min-h-screen !bg-black bg-black text-white flex flex-col">
+    <div className="min-h-screen bg-black text-white flex flex-col">
       {/* Hide Navigation on /admin */}
       {!isAdmin && <Navigation />}
 
       <AnimatePresence mode="wait">
         <motion.main
           key={location.pathname}
-          className="!bg-black bg-black flex-1 px-4 sm:px-6 lg:px-8"
+          className="flex-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
